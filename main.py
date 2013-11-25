@@ -5,8 +5,13 @@ import sys
 import commands
 import os
 import string
-from datetime import datetime
 import shutil
+import struct
+
+from datetime import datetime
+from Foundation import *
+from ScriptingBridge import *
+
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -15,6 +20,11 @@ sys.setdefaultencoding('utf-8')
 album = '걸어다니며 듣기'
 artist = '걸어다니며 듣기'
 genre = 'Voice'
+iTunesPlayList = '걸어다니며 듣기'
+
+
+##
+
 
 
 d = datetime.now()
@@ -97,8 +107,32 @@ try:
 except OSError:
     pass
 
-# 파일을 아이튠즈에 등록한다. 아마 아이튠즈가 실행되어 있어야 할 듯.
-src = './' + mp3_filename
-dst = '/Users/neoocean/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
-shutil.move(src, dst)
+# 일단 'iTunesPlayList'가 있는지 확인한다. 있으면 이걸 사용, 없으면 만들기.
+iTunes = SBApplication.applicationWithBundleIdentifier_("com.apple.iTunes")
+playListFound = False
+for playlist in iTunes.sources()[0].playlists():
+    if playlist.name() == iTunesPlayList:
+        playListFound = True
+        targetPlayList = playlist
+        print playlist.name() + ' found.'
+        break
+    else:
+        pass
+# 플레이리스트를 못 찾았으면 새로 만든다.
+if playListFound == False:
+    p = {'name':iTunesPlayList}
+    playlist = iTunes.classForScriptingClass_("playlist").alloc().initWithProperties_(p)
+    iTunes.sources()[0].playlists().insertObject_atIndex_(playlist, 0)
+
+# 플레이리스트에 트랙을 추가한다.
+# ?: 플레이리스트에 트랙을 추가하는 방법을 모르겠다.
+#    http://stackoverflow.com/questions/12971306/how-to-add-a-track-to-an-itunes-playlist-using-python-and-scripting-bridge
+#    여기를 보면 'iTunes.add_to_(track[1],newPlaylist)' 이렇게 추가하고 있는데, 
+#    여기서 'track[1]' 이 어떻게 생긴 건지 모르겠다. 이걸 알면 재생목록에 바로 추가할 수 있을텐데.
+# if playListFound == True:
+#    l = {'name': mp3_filename}
+#    track = iTunes.classForScriptingClass_("track").alloc().initWithProperties_(l)
+#    iTunes.add_to_(track, targetPlayList)
+
+
 
