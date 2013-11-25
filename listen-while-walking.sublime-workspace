@@ -1,0 +1,240 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "main.py",
+			"settings":
+			{
+				"buffer_size": 215,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "Packages/Python/Python.sublime-build",
+	"command_palette":
+	{
+		"height": 47.0,
+		"selected_items":
+		[
+			[
+				"package",
+				"Preferences: Browse Packages"
+			]
+		],
+		"width": 575.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib2,os; pf='Package Control.sublime-package'; ipp=sublime.installed_packages_path(); os.makedirs(ipp) if not os.path.exists(ipp) else None; urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler())); open(os.path.join(ipp,pf),'wb').write(urllib2.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read()); print('Please restart Sublime Text to finish installation')"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/neoocean/Dropbox/Repository/aod/cities.py",
+		"/Users/neoocean/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/neoocean/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/neoocean/Dropbox/LPTH/ex5.py",
+		"/Users/neoocean/Dropbox/LPTH/ex4.py",
+		"/Users/neoocean/Dropbox/LPTH/ex3.py",
+		"/Users/neoocean/Dropbox/LPTH/ex1.py",
+		"/Users/neoocean/Downloads/dokuwiki/inc/media.php",
+		"/Users/neoocean/Downloads/dokuwiki/inc/confutils.php",
+		"/Users/neoocean/Downloads/dokuwiki/conf/mime.conf",
+		"/Users/neoocean/Desktop/library/lib/plugins/searchindex/script.js",
+		"/Users/neoocean/Desktop/library/data/meta/%EA%B2%8C%EC%9E%84_%EC%86%8C%EA%B0%9C.indexed",
+		"/Users/neoocean/Desktop/library/data/meta/%EA%B2%8C%EC%9E%84_%EB%94%94%EC%9E%90%EC%9D%B8.indexed",
+		"/Users/neoocean/Desktop/library/data/index/title.idx",
+		"/Users/neoocean/Desktop/library/data/index/pageword.idx",
+		"/Users/neoocean/Desktop/library/data/index/w15.idx",
+		"/Users/neoocean/Desktop/library/lib/exe/indexer.php",
+		"/Users/neoocean/Desktop/library/lib/plugins/searchindex/admin.php",
+		"/Users/neoocean/Desktop/library/lib/plugins/searchindex/ajax.php",
+		"/Users/neoocean/Desktop/searchindex/script.js",
+		"/Users/neoocean/Desktop/searchindex/ajax.php",
+		"/Users/neoocean/Desktop/searchindex/admin.php",
+		"/Users/neoocean/Desktop/searchindex/manager.dat",
+		"/Users/neoocean/Desktop/searchindex/plugin.info.txt",
+		"/Users/neoocean/Desktop/searchindex/README",
+		"/Volumes/private/neoocean.net/neoocean_20110601.sql",
+		"/Users/neoocean/Downloads/dokuwiki/inc/init.php",
+		"/Users/neoocean/Desktop/doku.php",
+		"/Users/neoocean/Desktop/local.php",
+		"/Users/neoocean/Desktop/init.php",
+		"/Users/neoocean/Dropbox/korail/명절승차권 예약하기.html",
+		"/Users/neoocean/Dropbox/korail/view-source www.korail.com bt pr11100 w_pr11110.html",
+		"/private/etc/hosts",
+		"/Users/neoocean/Documents/Voices/걸어다니며 듣기 임시파일 (구분자).txt"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/Users/neoocean/Downloads/dokuwiki"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			" '",
+			"retrieveConfig",
+			"getMimeTypes",
+			"uploadwrong",
+			"올리기를 거부했습니다. 금지된 파일 확장자입니다!",
+			"	",
+			"date_default_timezone_get",
+			"utf",
+			"encoding"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "main.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 215,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								215,
+								215
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 170.0
+	},
+	"project": "listen-while-walking.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
