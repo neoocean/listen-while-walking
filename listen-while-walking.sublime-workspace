@@ -11,17 +11,8 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 3753,
+				"buffer_size": 2911,
 				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "dir_itunes",
-			"settings":
-			{
-				"buffer_size": 65770,
-				"line_ending": "Unix",
-				"name": ">>> dir(iTunes)"
 			}
 		}
 	],
@@ -57,6 +48,7 @@
 	},
 	"file_history":
 	[
+		"/Users/neoocean/Dropbox/Repository/listen-while-walking/dir_itunes",
 		"/Users/neoocean/Dropbox/Repository/listen-while-walking/itunes.py",
 		"/Users/neoocean/Dropbox/Repository/aod/command.py",
 		"/Users/neoocean/Dropbox/Repository/aod/cities.py",
@@ -111,6 +103,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			" iTunes.add_to_",
+			"description",
+			"desc",
+			"address",
+			"file",
+			"path",
+			"name",
 			", name",
 			"name",
 			"song",
@@ -160,51 +159,25 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3753,
+						"buffer_size": 2911,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2571,
-								2571
+								508,
+								508
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1579.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "dir_itunes",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 65770,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								7866,
-								7936
-							]
-						],
-						"settings":
-						{
-							"auto_name": ">>> dir(iTunes)",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 780.0,
+						"translation.y": 323.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

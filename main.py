@@ -7,6 +7,7 @@ import os
 import string
 import shutil
 import struct
+import xlrd
 
 from datetime import datetime
 from Foundation import *
@@ -34,6 +35,8 @@ filename = str(d.strftime('%Y%m%d-%H%M%S')) + '.aiff'
 # 제목과 내용을 묻는다.
 # title = raw_input('Title: ')
 # content = raw_input('Content: ')
+
+# 이 제목과 내용을 어딘가 정리된 문서로부터 가져왔으면 함. 일단 csv 파일로 시작해보자.
 title = '새로운 제목:::::!'
 content = '내용'
 
