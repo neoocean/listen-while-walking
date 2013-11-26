@@ -26,7 +26,6 @@ iTunesPlayList = '걸어다니며 듣기'
 ##
 
 
-
 d = datetime.now()
 filename = str(d.strftime('%Y%m%d-%H%M%S')) + '.aiff'
 
@@ -89,6 +88,8 @@ cmd = cmd + ' -metadata album=\'' + album + '\''
 cmd = cmd + ' -metadata artist=\'' + artist + '\''
 cmd = cmd + ' -metadata TIT1=\'' + album + '\'' # itunes groupping
 cmd = cmd + ' -metadata genre=\'' + genre + '\''
+cmd = cmd + ' -metadata TIT3=\'' + mp3_filename + '\''
+
 
 # 커맨드 끝에 출력 파일 이름을 붙인다.
 cmd = cmd + ' \'' + mp3_filename + '\''
@@ -107,6 +108,12 @@ try:
 except OSError:
     pass
 
+# 파일을 아이튠즈에 추가한다.
+src = './' + mp3_filename
+dst = '/Users/neoocean/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
+shutil.move(src, dst)
+
+
 # 일단 'iTunesPlayList'가 있는지 확인한다. 있으면 이걸 사용, 없으면 만들기.
 iTunes = SBApplication.applicationWithBundleIdentifier_("com.apple.iTunes")
 playListFound = False
@@ -118,21 +125,14 @@ for playlist in iTunes.sources()[0].playlists():
         break
     else:
         pass
+
 # 플레이리스트를 못 찾았으면 새로 만든다.
 if playListFound == False:
     p = {'name':iTunesPlayList}
     playlist = iTunes.classForScriptingClass_("playlist").alloc().initWithProperties_(p)
     iTunes.sources()[0].playlists().insertObject_atIndex_(playlist, 0)
 
-# 플레이리스트에 트랙을 추가한다.
-# ?: 플레이리스트에 트랙을 추가하는 방법을 모르겠다.
-#    http://stackoverflow.com/questions/12971306/how-to-add-a-track-to-an-itunes-playlist-using-python-and-scripting-bridge
-#    여기를 보면 'iTunes.add_to_(track[1],newPlaylist)' 이렇게 추가하고 있는데, 
-#    여기서 'track[1]' 이 어떻게 생긴 건지 모르겠다. 이걸 알면 재생목록에 바로 추가할 수 있을텐데.
-# if playListFound == True:
-#    l = {'name': mp3_filename}
-#    track = iTunes.classForScriptingClass_("track").alloc().initWithProperties_(l)
-#    iTunes.add_to_(track, targetPlayList)
 
 
+# 끝?
 

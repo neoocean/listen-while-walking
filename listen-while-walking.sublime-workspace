@@ -11,8 +11,17 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 215,
+				"buffer_size": 3753,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "dir_itunes",
+			"settings":
+			{
+				"buffer_size": 65770,
+				"line_ending": "Unix",
+				"name": ">>> dir(iTunes)"
 			}
 		}
 	],
@@ -48,6 +57,8 @@
 	},
 	"file_history":
 	[
+		"/Users/neoocean/Dropbox/Repository/listen-while-walking/itunes.py",
+		"/Users/neoocean/Dropbox/Repository/aod/command.py",
 		"/Users/neoocean/Dropbox/Repository/aod/cities.py",
 		"/Users/neoocean/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/neoocean/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
@@ -100,6 +111,18 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			", name",
+			"name",
+			"song",
+			"track",
+			"iTunes.currentTrack",
+			"playlist",
+			"alloc",
+			"playlist",
+			"list",
+			"album",
+			"track",
+			"new_filename",
 			" '",
 			"retrieveConfig",
 			"getMimeTypes",
@@ -116,6 +139,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"aiff_filename",
 			""
 		],
 		"reverse": false,
@@ -136,15 +160,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 215,
+						"buffer_size": 3753,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								215,
-								215
+								2571,
+								2571
 							]
 						],
 						"settings":
@@ -152,7 +176,35 @@
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1579.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "dir_itunes",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 65770,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7866,
+								7936
+							]
+						],
+						"settings":
+						{
+							"auto_name": ">>> dir(iTunes)",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 780.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -198,7 +250,7 @@
 	"project": "listen-while-walking.sublime-project",
 	"replace":
 	{
-		"height": 46.0
+		"height": 64.0
 	},
 	"save_all_on_build": true,
 	"select_file":
