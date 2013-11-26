@@ -114,25 +114,6 @@ dst = '/Users/neoocean/Music/iTunes/iTunes Media/Automatically Add to iTunes.loc
 shutil.move(src, dst)
 
 
-# 일단 'iTunesPlayList'가 있는지 확인한다. 있으면 이걸 사용, 없으면 만들기.
-iTunes = SBApplication.applicationWithBundleIdentifier_("com.apple.iTunes")
-playListFound = False
-for playlist in iTunes.sources()[0].playlists():
-    if playlist.name() == iTunesPlayList:
-        playListFound = True
-        targetPlayList = playlist
-        print playlist.name() + ' found.'
-        break
-    else:
-        pass
-
-# 플레이리스트를 못 찾았으면 새로 만든다.
-if playListFound == False:
-    p = {'name':iTunesPlayList}
-    playlist = iTunes.classForScriptingClass_("playlist").alloc().initWithProperties_(p)
-    iTunes.sources()[0].playlists().insertObject_atIndex_(playlist, 0)
-
-
 
 # 끝?
 
