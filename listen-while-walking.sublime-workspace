@@ -11,7 +11,7 @@
 			"file": "main.py",
 			"settings":
 			{
-				"buffer_size": 2911,
+				"buffer_size": 3099,
 				"line_ending": "Unix"
 			}
 		}
@@ -48,6 +48,7 @@
 	},
 	"file_history":
 	[
+		"/Users/neoocean/Dropbox/Repository/listen-while-walking/main.py",
 		"/Users/neoocean/Dropbox/Repository/listen-while-walking/dir_itunes",
 		"/Users/neoocean/Dropbox/Repository/listen-while-walking/itunes.py",
 		"/Users/neoocean/Dropbox/Repository/aod/command.py",
@@ -159,15 +160,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2911,
+						"buffer_size": 3099,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								508,
-								508
+								1032,
+								1032
 							]
 						],
 						"settings":
@@ -177,7 +178,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 323.0,
+						"translation.y": 728.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

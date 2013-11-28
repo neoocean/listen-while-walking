@@ -7,12 +7,11 @@ import os
 import string
 import shutil
 import struct
-import xlrd
+import csv
 
 from datetime import datetime
-from Foundation import *
-from ScriptingBridge import *
-
+# from Foundation import *
+# from ScriptingBridge import *
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -26,19 +25,6 @@ iTunesPlayList = '걸어다니며 듣기'
 
 ##
 
-
-d = datetime.now()
-filename = str(d.strftime('%Y%m%d-%H%M%S')) + '.aiff'
-
-
-
-# 제목과 내용을 묻는다.
-# title = raw_input('Title: ')
-# content = raw_input('Content: ')
-
-# 이 제목과 내용을 어딘가 정리된 문서로부터 가져왔으면 함. 일단 csv 파일로 시작해보자.
-title = '새로운 제목:::::!'
-content = '내용'
 
 def escape_characters(s):
     s = string.replace(s, ':', '')
@@ -55,10 +41,31 @@ def escape_characters(s):
     s = string.replace(s, '@', '')
     s = string.replace(s, '$', '')
     s = string.replace(s, '^', '')
+    s = string.replace(s, '"', '')
+    s = string.replace(s, '\'', '')
     return s
 
-title = escape_characters(title)
-full_content = title + '.....' + content
+
+
+d = datetime.now()
+filename = str(d.strftime('%Y%m%d-%H%M%S')) + '.aiff'
+
+
+# 제목과 내용을 csv 파일로부터 읽는다.
+with open('list.csv', 'rb') as c:
+    reader = csv.reader(c)
+    next(reader, None)
+    for row in reader:
+        if row[0] != '':
+            title = escape_characters(row[2])
+            full_content = title + '......' + row[3]
+            print title
+            print full_content
+
+
+# 어 잠깐. csv 읽기 전에 반복할 수 있게 만들어 놨어야지;
+sys.exit()
+
 
 
 # 커맨드를 실행해 파일로 만든다.
