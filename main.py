@@ -101,8 +101,14 @@ def moveToResultDirectory(mp3_filename):
     dist = './results/' + mp3_filename
     shutil.move(src, dist)
 
+def escape_characters_content_text(s):
+    s = string.replace(s, '"', '')
+    s = string.replace(s, '\'', '')
+    return s
+
 def escape_characters(s):
     s = string.replace(s, ':', '')
+    s = string.replace(s, '.', '')
     s = string.replace(s, '\\', '')
     s = string.replace(s, '!', '')
     s = string.replace(s, '/', '')
@@ -124,7 +130,7 @@ def escape_characters(s):
 
 def correctWords(full_content):
     # 이제 그 동안 거슬리게 들리던 발음을 마음에 들도록 교정한 다음 음성으로 만듭시다.
-    # full_content = string.replace(full_content, ':', '')
+    full_content = string.replace(full_content, 'CIA', '씨아이에이')
     return full_content
 
 def touch(path):
@@ -184,7 +190,7 @@ with open('list.csv', 'rb') as c:
 
             source = row[0]
             title = escape_characters(row[1])
-            full_content = title + '......' + row[2]
+            full_content = title + '......' + escape_characters_content_text(row[2])
             
             h = hashlib.new('sha256')
             h.update(source + title + full_content)
@@ -195,7 +201,7 @@ with open('list.csv', 'rb') as c:
                 aiff_filename = str(d.strftime('%Y%m%d')) + ' ' + \
                     escape_characters(title) + '.aiff'
 
-                full_content = correctWords(correctWords)
+                full_content = correctWords(full_content)
                 convertToVoice(filename, full_content)
 
                 renameVoice(title)
@@ -205,8 +211,8 @@ with open('list.csv', 'rb') as c:
                 runFfmpegCommand(cmd)
                 removeAIFF(aiff_filename)
                 moveToResultDirectory(mp3_filename)
-                saveConvertedContent(hashed)
                 addVoiceToItunesLibrary('./results/' + mp3_filename)
+                saveConvertedContent(hashed)
 
                 # ~ if searchConvertedContent
             else:
