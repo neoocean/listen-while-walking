@@ -1,6 +1,6 @@
 # coding=utf-8
 
-# import csv
+
 import sys
 import commands
 import os
@@ -8,6 +8,8 @@ import string
 import shutil
 import struct
 import csv
+import hashlib
+import glob
 
 from datetime import datetime
 # from Foundation import *
@@ -86,7 +88,6 @@ def removeAIFF(aiff_filename):
     except OSError:
         pass
 
-
 def addVoiceToItunesLibrary(mp3_filename):
     # 파일을 아이튠즈에 추가한다.
     src = './' + mp3_filename
@@ -94,7 +95,11 @@ def addVoiceToItunesLibrary(mp3_filename):
     dist = '/Users/neoocean/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
     shutil.move(src, dist)
 
-
+def moveToResultDirectory(mp3_filename):
+    # 완성된 파일을 Result 디렉토리로 옮겨놓는다.
+    src = './' + mp3_filename
+    dist = './results/' + mp3_filename
+    shutil.move(src, dist)
 
 def escape_characters(s):
     s = string.replace(s, ':', '')
@@ -117,6 +122,44 @@ def escape_characters(s):
     return s
 
 
+def touch(path):
+    with open(path, 'a'):
+        os.utime(path, None)
+
+
+def saveConvertedContent(hashed):
+    if os.path.isfile('./converted.csv') == False:
+        touch('./converted.csv')
+    with open('./converted.csv', 'ab') as f:
+        r = csv.writer(f, delimiter = ',')
+        r.writerow([str(hashed)])
+
+
+def searchConvertedContent(hashed):
+    if os.path.isfile('./converted.csv') == False:
+        return False
+    with open('./converted.csv', 'rb') as c:
+        reader = csv.reader(c)
+        for row in reader:
+            if str(row[0]) != hashed:
+                pass
+            else:
+                return True
+    return False
+
+
+def cleanupBeforeStart():
+    aiff = './*.aiff'
+    r = glob.glob(aiff)
+    for i in r:
+        os.remove(i)
+
+    mp3 = './*.mp3'
+    r = glob.glob(mp3)
+    for i in r:
+        os.remove(i)
+
+
 
 d = datetime.now()
 filename = str(d.strftime('%Y%m%d-%H%M%S')) + '.aiff'
@@ -128,35 +171,41 @@ full_content = ''
 with open('list.csv', 'rb') as c:
     reader = csv.reader(c)
     next(reader, None) # skip Header Row.
-    count = 0
+    count = 1
     for row in reader:
         if row[0] != '':
-            print 'Processing Row: ' + ++count
+            print '\nProcessing Row: ' + str(count)
+            cleanupBeforeStart()
+
+            source = row[0]
             title = escape_characters(row[1])
             full_content = title + '......' + row[2]
-            mp3_filename = str(d.strftime('%Y%m%d')) + ' ' + title + '.mp3'
-            aiff_filename = str(d.strftime('%Y%m%d')) + ' ' + \
-                escape_characters(title) + '.aiff'
+            
+            h = hashlib.new('sha256')
+            h.update(source + title + full_content)
+            hashed = str(h.hexdigest())
 
-            convertToVoice(filename, full_content)
-            renameVoice(title)
-            base_cmd = getFfmpegBaseCommand(title, aiff_filename)
-            meta_cmd = getFfmpegMetaCommand(title, album, artist, genre, mp3_filename)
-            cmd = base_cmd + meta_cmd
-            cmd = cmd + ' \'' + mp3_filename + '\''
-            runFfmpegCommand(cmd)
-            removeAIFF(aiff_filename)
-            # addVoiceToItunesLibrary(mp3_filename)
+            if searchConvertedContent(hashed) == False:
+                mp3_filename = str(d.strftime('%Y%m%d')) + ' ' + title + '.mp3'
+                aiff_filename = str(d.strftime('%Y%m%d')) + ' ' + \
+                    escape_characters(title) + '.aiff'
+
+                convertToVoice(filename, full_content)
+                renameVoice(title)
+                base_cmd = getFfmpegBaseCommand(title, aiff_filename)
+                meta_cmd = getFfmpegMetaCommand(title, album, artist, genre, mp3_filename)
+                cmd = base_cmd + meta_cmd + ' \'' + mp3_filename + '\''
+                runFfmpegCommand(cmd)
+                removeAIFF(aiff_filename)
+                moveToResultDirectory(mp3_filename)
+                saveConvertedContent(hashed)
+                addVoiceToItunesLibrary('./results/' + mp3_filename)
+
+                # ~ if searchConvertedContent
+            else:
+                print 'Already converted Content: Skipped'
+            
+            count = count + 1
 
 
 # 끝?
-
-
-
-
-
-
-
-
-
-
