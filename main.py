@@ -122,6 +122,11 @@ def escape_characters(s):
     return s
 
 
+def correctWords(full_content):
+    # 이제 그 동안 거슬리게 들리던 발음을 마음에 들도록 교정한 다음 음성으로 만듭시다.
+    # full_content = string.replace(full_content, ':', '')
+    return full_content
+
 def touch(path):
     with open(path, 'a'):
         os.utime(path, None)
@@ -190,7 +195,9 @@ with open('list.csv', 'rb') as c:
                 aiff_filename = str(d.strftime('%Y%m%d')) + ' ' + \
                     escape_characters(title) + '.aiff'
 
+                full_content = correctWords(correctWords)
                 convertToVoice(filename, full_content)
+
                 renameVoice(title)
                 base_cmd = getFfmpegBaseCommand(title, aiff_filename)
                 meta_cmd = getFfmpegMetaCommand(title, album, artist, genre, mp3_filename)
