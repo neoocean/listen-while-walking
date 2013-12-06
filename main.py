@@ -199,22 +199,26 @@ with open(CONTENT_FILE, 'rb') as c:
 
             source = row[1]
             title = escape_characters(row[2])
-            full_content = title + '......' + escape_characters_content_text(row[3])
+            full_content = title + '......' + \
+                           escape_characters_content_text(row[3])
 
             hashed = getHash(source, title, full_content)
 
             if searchConvertedContent(hashed) == False:
-                mp3_filename = TODAY_DATE + ' ' + title + '.' + EXTENSION_MP3
+                mp3_filename = TODAY_DATE + ' ' + title + \
+                               '.' + EXTENSION_MP3
                 aiff_filename = TODAY_DATE + ' ' + \
-                    escape_characters(title) + '.' + EXTENSION_AIFF
+                                escape_characters(title) + \
+                                '.' + EXTENSION_AIFF
 
                 full_content = correctWords(full_content)
-                convertToVoice(TODAY_DATE + '-' + TODAY_TIME + '.' + EXTENSION_AIFF, 
-                               full_content)
+                convertToVoice(TODAY_DATE + '-' + TODAY_TIME + \
+                               '.' + EXTENSION_AIFF, full_content) 
 
                 renameVoice(title)
                 base_cmd = getFfmpegBaseCommand(title, aiff_filename)
-                meta_cmd = getFfmpegMetaCommand(title, album, artist, genre, mp3_filename)
+                meta_cmd = getFfmpegMetaCommand(title, album, artist, 
+                                                genre, mp3_filename)
                 cmd = base_cmd + meta_cmd + ' \'' + mp3_filename + '\''
                 runFfmpegCommand(cmd)
                 removeAIFF(aiff_filename)
