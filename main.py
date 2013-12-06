@@ -188,9 +188,9 @@ with open('list.csv', 'rb') as c:
             print '\nProcessing Row: ' + str(count)
             cleanupBeforeStart()
 
-            source = row[0]
-            title = escape_characters(row[1])
-            full_content = title + '......' + escape_characters_content_text(row[2])
+            source = row[1]
+            title = escape_characters(row[2])
+            full_content = title + '......' + escape_characters_content_text(row[3])
             
             h = hashlib.new('sha256')
             h.update(source + title + full_content)
@@ -212,6 +212,7 @@ with open('list.csv', 'rb') as c:
                 removeAIFF(aiff_filename)
                 moveToResultDirectory(mp3_filename)
                 addVoiceToItunesLibrary('./results/' + mp3_filename)
+
                 saveConvertedContent(hashed)
 
                 # ~ if searchConvertedContent
