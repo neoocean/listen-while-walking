@@ -1,6 +1,5 @@
 # coding=utf-8
 
-
 import sys
 import commands
 import os
@@ -24,6 +23,14 @@ artist = '걸어다니며 듣기'
 genre = 'Voice'
 iTunesPlayList = '걸어다니며 듣기'
 
+d = datetime.now()
+TODAY_DATE = str(d.strftime('%Y%m%d'))
+TODAY_TIME = str(d.strftime('%H%M%S'))
+CONVERTED_FILE = './converted.csv'
+CONTENT_FILE = './list.csv'
+
+EXTENSION_MP3 = 'mp3'
+EXTENSION_AIFF = 'aiff'
 
 ##
 
@@ -41,15 +48,15 @@ def convertToVoice(filename, full_content):
 
 def renameVoice(title):
     # 파일 이름을 내가 쓰는 규칙대로 바꾼다.
-    aiff_filename = str(d.strftime('%Y%m%d')) + ' ' + \
-        escape_characters(title) + '.aiff'
+    aiff_filename = TODAY_DATE + ' ' + \
+        escape_characters(title) + '.' + EXTENSION_AIFF
     os.rename(filename, aiff_filename)
     print 'Renamed as ' + aiff_filename
 
 
 def getFfmpegBaseCommand(title, aiff_filename):
     # mp3 형식으로 컨버팅하는 ffmpeg 커맨드를 준비한다.
-    mp3_filename = str(d.strftime('%Y%m%d')) + ' ' + title + '.mp3'
+    mp3_filename = TODAY_DATE + ' ' + title + '.' + EXTENSION_MP3
     cmd = './ffmpeg -y -i \'' + aiff_filename + \
         '\' -f mp3 -acodec libmp3lame -ab 48000 -ar 22050'
     return cmd
@@ -81,7 +88,6 @@ def runFfmpegCommand(cmd):
 
 
 def removeAIFF(aiff_filename):
-    # aiff 파일을 삭제한다.
     try:
         os.remove(aiff_filename)
         print 'Removed: ' + aiff_filename
@@ -102,6 +108,8 @@ def moveToResultDirectory(mp3_filename):
     shutil.move(src, dist)
 
 def escape_characters_content_text(s):
+    """ 본문에서 csv 파일에 문제를 일으키는 문자를 제거.
+    """
     s = string.replace(s, '"', '')
     s = string.replace(s, '\'', '')
     return s
@@ -139,17 +147,19 @@ def touch(path):
 
 
 def saveConvertedContent(hashed):
-    if os.path.isfile('./converted.csv') == False:
-        touch('./converted.csv')
-    with open('./converted.csv', 'ab') as f:
+    if os.path.isfile(CONVERTED_FILE) == False:
+        touch(CONVERTED_FILE)
+    with open(CONVERTED_FILE, 'ab') as f:
         r = csv.writer(f, delimiter = ',')
         r.writerow([str(hashed)])
 
 
 def searchConvertedContent(hashed):
-    if os.path.isfile('./converted.csv') == False:
+    """ 해시를 받아 converted.csv 파일에서 검색한 결과를 돌려준다.
+    """
+    if os.path.isfile(CONVERTED_FILE) == False:
         return False
-    with open('./converted.csv', 'rb') as c:
+    with open(CONVERTED_FILE, 'rb') as c:
         reader = csv.reader(c)
         for row in reader:
             if str(row[0]) != hashed:
@@ -160,26 +170,25 @@ def searchConvertedContent(hashed):
 
 
 def cleanupBeforeStart():
-    aiff = './*.aiff'
+    aiff = './*.' + EXTENSION_AIFF
     r = glob.glob(aiff)
     for i in r:
         os.remove(i)
 
-    mp3 = './*.mp3'
+    mp3 = './*.' + EXTENSION_MP3
     r = glob.glob(mp3)
     for i in r:
         os.remove(i)
 
 
-
-d = datetime.now()
-filename = str(d.strftime('%Y%m%d-%H%M%S')) + '.aiff'
-title = ''
-full_content = ''
+def getHash(source, title, full_content):
+    h = hashlib.new('sha256')
+    h.update(source + title + full_content)
+    return str(h.hexdigest())
 
 
 # 제목과 내용을 csv 파일로부터 읽는다.
-with open('list.csv', 'rb') as c:
+with open(CONTENT_FILE, 'rb') as c:
     reader = csv.reader(c)
     next(reader, None) # skip Header Row.
     count = 1
@@ -191,18 +200,17 @@ with open('list.csv', 'rb') as c:
             source = row[1]
             title = escape_characters(row[2])
             full_content = title + '......' + escape_characters_content_text(row[3])
-            
-            h = hashlib.new('sha256')
-            h.update(source + title + full_content)
-            hashed = str(h.hexdigest())
+
+            hashed = getHash(source, title, full_content)
 
             if searchConvertedContent(hashed) == False:
-                mp3_filename = str(d.strftime('%Y%m%d')) + ' ' + title + '.mp3'
-                aiff_filename = str(d.strftime('%Y%m%d')) + ' ' + \
-                    escape_characters(title) + '.aiff'
+                mp3_filename = TODAY_DATE + ' ' + title + '.' + EXTENSION_MP3
+                aiff_filename = TODAY_DATE + ' ' + \
+                    escape_characters(title) + '.' + EXTENSION_AIFF
 
                 full_content = correctWords(full_content)
-                convertToVoice(filename, full_content)
+                convertToVoice(TODAY_DATE + '-' + TODAY_TIME + '.' + EXTENSION_AIFF, 
+                               full_content)
 
                 renameVoice(title)
                 base_cmd = getFfmpegBaseCommand(title, aiff_filename)
@@ -221,5 +229,3 @@ with open('list.csv', 'rb') as c:
             
             count = count + 1
 
-
-# 끝?
