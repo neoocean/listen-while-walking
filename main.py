@@ -35,6 +35,7 @@ EXTENSION_AIFF = 'aiff'
 
 ##
 
+
 def convertToVoice(filename, full_content):
     cmd = 'say -o ./\'' + filename + '\' \'' + full_content + '\''
     result = commands.getstatusoutput(cmd)
@@ -123,6 +124,26 @@ def escape_characters(s):
     s = string.replace(s, '\'', '')
     return s
 
+def removeNewLine(s):
+    return string.replace(s, '\n', '')
+def getCSVColumnNumber(filename, column):
+    """ 파일이름의 CSV 파일을 열어 column이 몇 번째 칼럼인지 확인한 다음 숫자를 돌려준다.
+    """
+    if os.path.isfile(filename) == False:
+        return False
+    with open(filename, 'rb') as c:
+        for line in c.readlines():
+            p = 0
+            l = line.split(',')
+            for i in range(len(l)):
+                print removeNewLine(l[i]) + ', ' + column
+                if removeNewLine(l[i]) == column:
+                    return i
+            return False
+
+print getCSVColumnNumber(CONTENT_FILE, '내용')
+sys.exit()
+
 
 def correctWords(full_content):
     # 이제 그 동안 거슬리게 들리던 발음을 마음에 들도록 교정한 다음 음성으로 만듭시다.
@@ -155,7 +176,6 @@ def saveConvertedContent(hashed):
     with open(CONVERTED_FILE, 'ab') as f:
         r = csv.writer(f, delimiter = ',')
         r.writerow([str(hashed)])
-
 
 def searchConvertedContent(hashed):
     """ 해시를 받아 converted.csv 파일에서 검색한 결과를 돌려준다.
