@@ -1,5 +1,7 @@
 # coding=utf-8
 
+# https://docs.google.com/a/neoocean.net/spreadsheet/ccc?key=0AuH586Q4RPiudGZkbFhXYVBlZzlEUHdGRUtwS09OSXc&usp=drive_web
+
 import sys
 import commands
 import os
@@ -22,9 +24,8 @@ artist = '걸어다니며 듣기'
 genre = 'Voice'
 iTunesPlayList = '걸어다니며 듣기'
 
-d = datetime.now()
-TODAY_DATE = str(d.strftime('%Y%m%d'))
-TODAY_TIME = str(d.strftime('%H%M%S'))
+TODAY_DATE = str(datetime.now().strftime('%Y%m%d'))
+TODAY_TIME = str(datetime.now().strftime('%H%M%S'))
 CONVERTED_FILE = './converted.csv'
 CONTENT_FILE = './list.csv'
 RESULT_DIR = './results/'
@@ -50,7 +51,7 @@ def getFFmpegBaseCommand(title, aiff_filename):
     return cmd
 
 
-def getFfmpegMetaCommand(title, album, artist, genre, mp3_filename):
+def getFFmpegMetaCommand(title, album, artist, genre, mp3_filename):
     # 메타데이터를 입력하는 ffmpeg 커맨드를 준비한다.
     # http://jonhall.info/how_to/create_id3_tags_using_ffmpeg
     cmd = ''
@@ -118,6 +119,7 @@ def escape_characters(s):
     s = string.replace(s, '?', '')
     s = string.replace(s, '^', '')
     s = string.replace(s, '"', '')
+    s = string.replace(s, ',', '')
     s = string.replace(s, '\'', '')
     return s
 
