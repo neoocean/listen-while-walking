@@ -46,11 +46,9 @@ def convertToVoice(filename, full_content):
         print 'Command: ' + cmd
 
 
-def renameVoice(title):
+def renameVoice(aiff_filename, title):
     # 파일 이름을 내가 쓰는 규칙대로 바꾼다.
-    aiff_filename = TODAY_DATE + ' ' + \
-        escape_characters(title) + '.' + EXTENSION_AIFF
-    os.rename(filename, aiff_filename)
+    os.rename(aiff_filename, aiff_filename)
     print 'Renamed as ' + aiff_filename
 
 
@@ -147,6 +145,8 @@ def touch(path):
 
 
 def saveConvertedContent(hashed):
+    """ 변환한 데이터의 해시를 받아 파일에 추가한다.
+    """
     if os.path.isfile(CONVERTED_FILE) == False:
         touch(CONVERTED_FILE)
     with open(CONVERTED_FILE, 'ab') as f:
@@ -212,10 +212,9 @@ with open(CONTENT_FILE, 'rb') as c:
                                 '.' + EXTENSION_AIFF
 
                 full_content = correctWords(full_content)
-                convertToVoice(TODAY_DATE + '-' + TODAY_TIME + \
-                               '.' + EXTENSION_AIFF, full_content) 
+                convertToVoice(aiff_filename, full_content) 
 
-                renameVoice(title)
+                renameVoice(aiff_filename, title)
                 base_cmd = getFfmpegBaseCommand(title, aiff_filename)
                 meta_cmd = getFfmpegMetaCommand(title, album, artist, 
                                                 genre, mp3_filename)
