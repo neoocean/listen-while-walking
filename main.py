@@ -28,6 +28,7 @@ TODAY_DATE = str(d.strftime('%Y%m%d'))
 TODAY_TIME = str(d.strftime('%H%M%S'))
 CONVERTED_FILE = './converted.csv'
 CONTENT_FILE = './list.csv'
+RESULT_DIR = './results/'
 
 EXTENSION_MP3 = 'mp3'
 EXTENSION_AIFF = 'aiff'
@@ -110,6 +111,7 @@ def escape_characters_content_text(s):
     """
     s = string.replace(s, '"', '')
     s = string.replace(s, '\'', '')
+    #s = string.replace(s, ',', '')
     return s
 
 def escape_characters(s):
@@ -137,7 +139,18 @@ def escape_characters(s):
 def correctWords(full_content):
     # 이제 그 동안 거슬리게 들리던 발음을 마음에 들도록 교정한 다음 음성으로 만듭시다.
     full_content = string.replace(full_content, 'CIA', '씨아이에이')
+    full_content = string.replace(full_content, 'OS/2', '오에스투')
+    full_content = string.replace(full_content, '8086', '팔공팔육')
+    full_content = string.replace(full_content, '80286', '팔공이팔육')
+    full_content = string.replace(full_content, '80386', '팔공삼팔육')
+    full_content = string.replace(full_content, '80486', '팔공사팔육')
+    full_content = string.replace(full_content, '386칩', '삼팔육칩')
+    full_content = string.replace(full_content, '386용', '삼팔육용')
+    full_content = string.replace(full_content, '386의', '삼팔육의')
+    full_content = string.replace(full_content, '386은', '삼팔육은')
+    # full_content = string.replace(full_content, '', '')
     return full_content
+
 
 def touch(path):
     with open(path, 'a'):
@@ -181,9 +194,9 @@ def cleanupBeforeStart():
         os.remove(i)
 
 
-def getHash(source, title, full_content):
+def getHash(source):
     h = hashlib.new('sha256')
-    h.update(source + title + full_content)
+    h.update(source)
     return str(h.hexdigest())
 
 
@@ -199,10 +212,11 @@ with open(CONTENT_FILE, 'rb') as c:
 
             source = row[1]
             title = escape_characters(row[2])
+
+            hashed = getHash(source)
+
             full_content = title + '......' + \
                            escape_characters_content_text(row[3])
-
-            hashed = getHash(source, title, full_content)
 
             if searchConvertedContent(hashed) == False:
                 mp3_filename = TODAY_DATE + ' ' + title + \
@@ -222,7 +236,7 @@ with open(CONTENT_FILE, 'rb') as c:
                 runFfmpegCommand(cmd)
                 removeAIFF(aiff_filename)
                 moveToResultDirectory(mp3_filename)
-                addVoiceToItunesLibrary('./results/' + mp3_filename)
+                addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
 
                 saveConvertedContent(hashed)
 
