@@ -9,10 +9,9 @@ import struct
 import csv
 import hashlib
 import glob
+import logging
 
 from datetime import datetime
-# from Foundation import *
-# from ScriptingBridge import *
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -36,24 +35,14 @@ EXTENSION_AIFF = 'aiff'
 ##
 
 def convertToVoice(filename, full_content):
-    # 커맨드를 실행해 파일로 만든다.
     cmd = 'say -o ./\'' + filename + '\' \'' + full_content + '\''
     result = commands.getstatusoutput(cmd)
     if result[0] == 0:
-        print 'Converted as ' + filename
+        return True
     else:
-        print 'Error to converting. Code: ' + str(result[0])
-        print 'Message: ' + str(result[1])
-        print 'Command: ' + cmd
+        return False
 
-
-def renameVoice(aiff_filename, title):
-    # 파일 이름을 내가 쓰는 규칙대로 바꾼다.
-    os.rename(aiff_filename, aiff_filename)
-    print 'Renamed as ' + aiff_filename
-
-
-def getFfmpegBaseCommand(title, aiff_filename):
+def getFFmpegBaseCommand(title, aiff_filename):
     # mp3 형식으로 컨버팅하는 ffmpeg 커맨드를 준비한다.
     mp3_filename = TODAY_DATE + ' ' + title + '.' + EXTENSION_MP3
     cmd = './ffmpeg -y -i \'' + aiff_filename + \
@@ -75,36 +64,33 @@ def getFfmpegMetaCommand(title, album, artist, genre, mp3_filename):
     return cmd
 
 
-def runFfmpegCommand(cmd):
+def runFFmpegCommand(cmd):
     #ffmpeg 커맨드를 실행한다. 부디 같은 디렉토리 안에 있기를 바래요.
     result = commands.getstatusoutput(cmd)
     if result[0] == 0:
-        print 'Converted as ' + mp3_filename
+        return True
     else:
-        print 'Error to converting. Code: ' + str(result[0])
-        print 'Message: ' + str(result[1])
-        print 'Command: ' + cmd
+        return False
 
 
 def removeAIFF(aiff_filename):
     try:
         os.remove(aiff_filename)
-        print 'Removed: ' + aiff_filename
     except OSError:
-        pass
+        return False
+    return True
 
 def addVoiceToItunesLibrary(mp3_filename):
-    # 파일을 아이튠즈에 추가한다.
-    src = './' + mp3_filename
-    # dist 경로를 얻어올 방법이 필요해요.
-    dist = '/Users/neoocean/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
-    shutil.move(src, dist)
+    source = './' + mp3_filename
+    distnation = '/Users/neoocean/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
+    shutil.move(source, distnation)
+    # 파일이 곧 사라지기 때문에 리턴을 체크하면 안됨. 차라리 직접 아이튠즈 라이브러리를 검색하면?
 
 def moveToResultDirectory(mp3_filename):
-    # 완성된 파일을 Result 디렉토리로 옮겨놓는다.
-    src = './' + mp3_filename
-    dist = './results/' + mp3_filename
-    shutil.move(src, dist)
+    source = './' + mp3_filename
+    distnation = RESULT_DIR + mp3_filename
+    shutil.move(source, distnation)
+    return True # 임시; 실제로 파일이 있는지 확인한 다음에 리턴할 것.
 
 def escape_characters_content_text(s):
     """ 본문에서 csv 파일에 문제를 일으키는 문자를 제거.
@@ -219,30 +205,42 @@ with open(CONTENT_FILE, 'rb') as c:
                            escape_characters_content_text(row[3])
 
             if searchConvertedContent(hashed) == False:
-                mp3_filename = TODAY_DATE + ' ' + title + \
+                mp3_filename = TODAY_DATE + ' ' + \
+                               escape_characters(title) + \
                                '.' + EXTENSION_MP3
                 aiff_filename = TODAY_DATE + ' ' + \
                                 escape_characters(title) + \
                                 '.' + EXTENSION_AIFF
 
                 full_content = correctWords(full_content)
-                convertToVoice(aiff_filename, full_content) 
 
-                renameVoice(aiff_filename, title)
-                base_cmd = getFfmpegBaseCommand(title, aiff_filename)
-                meta_cmd = getFfmpegMetaCommand(title, album, artist, 
+                if convertToVoice(aiff_filename, full_content) == False:
+                    logging.warning('FAILED: convertToVoice(' + \
+                                    aiff_filename + ', ' + full_content + ')')
+                    sys.exit()
+
+                base_cmd = getFFmpegBaseCommand(title, aiff_filename)
+                meta_cmd = getFFmpegMetaCommand(title, album, artist, 
                                                 genre, mp3_filename)
                 cmd = base_cmd + meta_cmd + ' \'' + mp3_filename + '\''
-                runFfmpegCommand(cmd)
-                removeAIFF(aiff_filename)
-                moveToResultDirectory(mp3_filename)
-                addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
+                if runFFmpegCommand(cmd) == False:
+                    logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
+                    sys.exit()
 
+                if removeAIFF(aiff_filename) == False:
+                    logging.warning('FAILED: removeAIFF(' + aiff_filename + ')')
+                    sys.exit()
+                
+                if moveToResultDirectory(mp3_filename) == False:
+                    logging.warning('FAILED: moveToResultDirectory(' + mp3_filename + ')')
+                    sys.exit()
+
+                addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
                 saveConvertedContent(hashed)
 
                 # ~ if searchConvertedContent
             else:
-                print 'Already converted Content: Skipped'
+                logging.warning('Already converted: Skipped')
             
             count = count + 1
 
