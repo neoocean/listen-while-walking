@@ -165,6 +165,7 @@ def correctWords(full_content):
     full_content = string.replace(full_content, '386의', '삼팔육의')
     full_content = string.replace(full_content, '386은', '삼팔육은')
     full_content = string.replace(full_content, '美', '미')
+    full_content = string.replace(full_content, '中', '증')
 
     # full_content = string.replace(full_content, '', '')
     return full_content
