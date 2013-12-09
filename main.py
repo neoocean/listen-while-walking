@@ -33,6 +33,12 @@ RESULT_DIR = './results/'
 EXTENSION_MP3 = 'mp3'
 EXTENSION_AIFF = 'aiff'
 
+COLUMN_NAME_TIMESTAMP = '타임스탬프'
+COLUMN_NAME_SOURCE = '주소'
+COLUMN_NAME_TITLE = '제목'
+COLUMN_NAME_CONTENT = '내용'
+
+
 ##
 
 
@@ -136,13 +142,14 @@ def getCSVColumnNumber(filename, column):
             p = 0
             l = line.split(',')
             for i in range(len(l)):
-                print removeNewLine(l[i]) + ', ' + column
-                if removeNewLine(l[i]) == column:
+                # print str(i) + ', ' + removeNewLine(l[i]) + ', ' + column
+                if str(removeNewLine(l[i])) == str(column):
                     return i
+                else:
+                    pass
             return False
-
-print getCSVColumnNumber(CONTENT_FILE, '내용')
-sys.exit()
+# print getCSVColumnNumber(CONTENT_FILE, '제목')
+# sys.exit()
 
 
 def correctWords(full_content):
@@ -216,17 +223,49 @@ with open(CONTENT_FILE, 'rb') as c:
     next(reader, None) # skip Header Row.
     count = 1
     for row in reader:
-        if row[0] != '':
+ 
+        col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_TIMESTAMP)
+        if col >= 0:
+            pass
+        else:
+            logging.warning('FAILED: getCSVColumnNumber(' \
+                                + CONTENT_FILE + ', ' \
+                                + COLUMN_NAME_TIMESTAMP + ')')
+            sys.exit()
+
+        if row[col] != '':
             print '\nProcessing Row: ' + str(count)
             cleanupBeforeStart()
 
-            source = row[1]
-            title = escape_characters(row[2])
+            col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_SOURCE)
+            if col == False:
+                logging.warning('FAILED: getCSVColumnNumber(' \
+                                + CONTENT_FILE + ', ' \
+                                + COLUMN_NAME_SOURCE + ')')
+                sys.exit()
+            else:
+                source = row[col]
+
+            col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_TITLE)
+            if col == False:
+                logging.warning('FAILED: getCSVColumnNumber(' \
+                                + CONTENT_FILE + ', ' \
+                                + COLUMN_NAME_TITLE + ')')
+                sys.exit()
+            else:
+                title = escape_characters(row[col])
 
             hashed = getHash(source)
 
-            full_content = title + '......' + \
-                           escape_characters_content_text(row[3])
+            col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_CONTENT)
+            if col == False:
+                logging.warning('FAILED: getCSVColumnNumber(' \
+                                + CONTENT_FILE + ', ' \
+                                + COLUMN_NAME_CONTENT + ')')
+                sys.exit()
+            else:
+                full_content = title + '......' + \
+                               escape_characters_content_text(row[col])
 
             if searchConvertedContent(hashed) == False:
                 mp3_filename = TODAY_DATE + ' ' + \
