@@ -128,6 +128,8 @@ def escape_characters(s):
     s = string.replace(s, '"', '')
     s = string.replace(s, ',', '')
     s = string.replace(s, '\'', '')
+    s = string.replace(s, '\t', '')
+    s = string.replace(s, '\n', '')
     return s
 
 def removeNewLine(s):
@@ -164,8 +166,32 @@ def correctWords(full_content):
     full_content = string.replace(full_content, '386용', '삼팔육용')
     full_content = string.replace(full_content, '386의', '삼팔육의')
     full_content = string.replace(full_content, '386은', '삼팔육은')
+    full_content = string.replace(full_content, 'GNU', '지엔유')
+    full_content = string.replace(full_content, 'X11', '엑스일레븐')
+    full_content = string.replace(full_content, 'gamasutra', '가마수트라')
     full_content = string.replace(full_content, '美', '미')
     full_content = string.replace(full_content, '中', '증')
+    full_content = string.replace(full_content, '①', '일,')
+    full_content = string.replace(full_content, '②', '이,')
+    full_content = string.replace(full_content, 'Guardian', '가디언')
+    full_content = string.replace(full_content, '.com', '닷컴')
+    full_content = string.replace(full_content, '.net', '닷넷')
+    full_content = string.replace(full_content, '北', '북')
+    full_content = string.replace(full_content, 'NASA', '나사')
+    full_content = string.replace(full_content, 'Facebook', '페이스북')
+    full_content = string.replace(full_content, '1/4분기', '일사분기')
+    full_content = string.replace(full_content, '2/4분기', '이사분기')
+    full_content = string.replace(full_content, '3/4분기', '삼사분기')
+    full_content = string.replace(full_content, '4/4분기', '사사분기')
+    full_content = string.replace(full_content, '14분기', '일사분기')
+    full_content = string.replace(full_content, '24분기', '이사분기')
+    full_content = string.replace(full_content, '34분기', '삼사분기')
+    full_content = string.replace(full_content, '44분기', '사사분기')
+    full_content = string.replace(full_content, 'ROI', '알오아이')
+    full_content = string.replace(full_content, 'SQL', '에스큐엘')
+    full_content = string.replace(full_content, 'ㅋ', '크')
+    full_content = string.replace(full_content, '韓', '한')
+
 
     # full_content = string.replace(full_content, '', '')
     return full_content
