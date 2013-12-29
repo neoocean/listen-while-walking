@@ -30,10 +30,10 @@ sys.setdefaultencoding('utf-8')
 
 
 #setting
-album = '걸어다니며 듣기'
-artist = '걸어다니며 듣기'
-genre = 'Voice'
-iTunesPlayList = '걸어다니며 듣기'
+album = u'걸어다니며 듣기'
+artist = u'걸어다니며 듣기'
+genre = u'Voice'
+iTunesPlayList = u'걸어다니며 듣기'
 
 TODAY_DATE = str(datetime.now().strftime('%Y%m%d'))
 TODAY_TIME = str(datetime.now().strftime('%H%M%S'))
