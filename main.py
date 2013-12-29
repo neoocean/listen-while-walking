@@ -28,6 +28,7 @@ TODAY_DATE = str(datetime.now().strftime('%Y%m%d'))
 TODAY_TIME = str(datetime.now().strftime('%H%M%S'))
 CONVERTED_FILE = './converted.csv'
 CONTENT_FILE = './list.csv'
+CORRECT_FILE = './correct.csv'
 RESULT_DIR = './results/'
 
 EXTENSION_MP3 = 'mp3'
@@ -37,7 +38,8 @@ COLUMN_NAME_TIMESTAMP = '타임스탬프'
 COLUMN_NAME_SOURCE = '주소'
 COLUMN_NAME_TITLE = '제목'
 COLUMN_NAME_CONTENT = '내용'
-
+COLUMN_NAME_CORRECT_FROM = '찾을 단어'
+COLUMN_NAME_CORRECT_TO = '고칠 단어'
 
 ##
 
@@ -155,45 +157,18 @@ def getCSVColumnNumber(filename, column):
 
 
 def correctWords(full_content):
-    # 이제 그 동안 거슬리게 들리던 발음을 마음에 들도록 교정한 다음 음성으로 만듭시다.
-    full_content = string.replace(full_content, 'CIA', '씨아이에이')
-    full_content = string.replace(full_content, 'OS/2', '오에스투')
-    full_content = string.replace(full_content, '8086', '팔공팔육')
-    full_content = string.replace(full_content, '80286', '팔공이팔육')
-    full_content = string.replace(full_content, '80386', '팔공삼팔육')
-    full_content = string.replace(full_content, '80486', '팔공사팔육')
-    full_content = string.replace(full_content, '386칩', '삼팔육칩')
-    full_content = string.replace(full_content, '386용', '삼팔육용')
-    full_content = string.replace(full_content, '386의', '삼팔육의')
-    full_content = string.replace(full_content, '386은', '삼팔육은')
-    full_content = string.replace(full_content, 'GNU', '지엔유')
-    full_content = string.replace(full_content, 'X11', '엑스일레븐')
-    full_content = string.replace(full_content, 'gamasutra', '가마수트라')
-    full_content = string.replace(full_content, '美', '미')
-    full_content = string.replace(full_content, '中', '증')
-    full_content = string.replace(full_content, '①', '일,')
-    full_content = string.replace(full_content, '②', '이,')
-    full_content = string.replace(full_content, 'Guardian', '가디언')
-    full_content = string.replace(full_content, '.com', '닷컴')
-    full_content = string.replace(full_content, '.net', '닷넷')
-    full_content = string.replace(full_content, '北', '북')
-    full_content = string.replace(full_content, 'NASA', '나사')
-    full_content = string.replace(full_content, 'Facebook', '페이스북')
-    full_content = string.replace(full_content, '1/4분기', '일사분기')
-    full_content = string.replace(full_content, '2/4분기', '이사분기')
-    full_content = string.replace(full_content, '3/4분기', '삼사분기')
-    full_content = string.replace(full_content, '4/4분기', '사사분기')
-    full_content = string.replace(full_content, '14분기', '일사분기')
-    full_content = string.replace(full_content, '24분기', '이사분기')
-    full_content = string.replace(full_content, '34분기', '삼사분기')
-    full_content = string.replace(full_content, '44분기', '사사분기')
-    full_content = string.replace(full_content, 'ROI', '알오아이')
-    full_content = string.replace(full_content, 'SQL', '에스큐엘')
-    full_content = string.replace(full_content, 'ㅋ', '크')
-    full_content = string.replace(full_content, '韓', '한')
+    with open(CORRECT_FILE, 'rb') as c:
+        reader = csv.reader(c)
+        next(reader, None) # skip Header Row.
+        for row in reader:
+            correct_from_col = getCSVColumnNumber(CORRECT_FILE, COLUMN_NAME_CORRECT_FROM)
+            correct_from = row[correct_from_col].strip()
+            correct_to_col = getCSVColumnNumber(CORRECT_FILE, COLUMN_NAME_CORRECT_TO)
+            correct_to = row[correct_to_col].strip()
 
+            # logging.warning('tring.replace(full_content, ' + correct_from + ', ' + correct_to + ')')
+            full_content = string.replace(full_content, correct_from, correct_to)
 
-    # full_content = string.replace(full_content, '', '')
     return full_content
 
 

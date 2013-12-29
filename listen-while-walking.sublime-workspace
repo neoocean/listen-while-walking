@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"EXTE",
+				"EXTENSION_AIFF"
+			],
+			[
 				"move",
 				"moveToResultDirectory"
 			],
@@ -23,14 +27,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "main.py",
-			"settings":
-			{
-				"buffer_size": 7733,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "Packages/Python/Python.sublime-build",
 	"command_palette":
@@ -64,11 +60,13 @@
 	},
 	"file_history":
 	[
-		"/Users/neoocean/Dropbox/Repository/listen-while-walking/list.csv",
-		"/Users/neoocean/Dropbox/Repository/change-log-english/README.md",
-		"/Users/neoocean/Dropbox/Repository/listen-while-walking/converted.csv",
-		"/Users/neoocean/Dropbox/Repository/listen-while-walking/dir_itunes",
 		"/Users/neoocean/Dropbox/Repository/listen-while-walking/main.py",
+		"/Users/neoocean/Dropbox/Repository/listen-while-walking/list.csv",
+		"/Users/neoocean/Dropbox/Repository/listen-while-walking/converted.csv",
+		"/Applications/Sublime Text.app/Contents/MacOS/changelog.txt",
+		"/Users/neoocean/Dropbox/Repository/listen-while-walking/README.md",
+		"/Users/neoocean/Dropbox/Repository/change-log-english/README.md",
+		"/Users/neoocean/Dropbox/Repository/listen-while-walking/dir_itunes",
 		"/Users/neoocean/Dropbox/Repository/listen-while-walking/itunes.py",
 		"/Users/neoocean/Dropbox/Repository/aod/command.py",
 		"/Users/neoocean/Dropbox/Repository/aod/cities.py",
@@ -123,6 +121,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"addVoiceToItunesLibrary",
+			"TODAY_DATE",
+			"getCSVColumnNumber",
+			"COLUMN_NAME_TIMESTAMP",
 			"moveToResultDirectory",
 			"removeAIFF",
 			"runFfmpegCommand",
@@ -190,42 +192,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "main.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7733,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5711,
-								5711
-							]
-						],
-						"settings":
-						{
-							"rulers":
-							[
-								78
-							],
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3381.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -263,6 +231,10 @@
 	"output.exec":
 	{
 		"height": 170.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
 	},
 	"project": "listen-while-walking.sublime-project",
 	"replace":
