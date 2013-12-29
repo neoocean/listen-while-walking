@@ -103,10 +103,10 @@ def removeAIFF(aiff_filename):
 
 def addVoiceToItunesLibrary(mp3_filename):
     source = './' + mp3_filename
-    distnation = 'Users/' + getUserName() \
-                          + '/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
+    distnation = '/Users/' + getUserName() \
+                           + '/Music/iTunes/iTunes Media/' \
+                           + 'Automatically Add to iTunes.localized'
     shutil.move(source, distnation)
-    # 파일이 곧 사라지기 때문에 리턴을 체크하면 안됨. 차라리 직접 아이튠즈 라이브러리를 검색하면?
 
 def moveToResultDirectory(mp3_filename):
     source = './' + mp3_filename
