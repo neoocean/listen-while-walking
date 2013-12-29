@@ -7,15 +7,14 @@ import pwd
 import string
 import shutil
 import struct
-import csv
-import hashlib
 import glob
 import logging
 
 import gdata.docs
 import gdata.docs.service
 import gdata.spreadsheet.service
-import re, os
+import re
+import os
 
 from google_drive_authentication import *
 
@@ -28,7 +27,7 @@ sys.setdefaultencoding('utf-8')
 
 
 #setting
-TEST_MODE = True
+TEST_MODE = False
 
 album = u'걸어다니며 듣기'
 artist = u'걸어다니며 듣기'
@@ -37,7 +36,6 @@ iTunesPlayList = u'걸어다니며 듣기'
 
 TODAY_DATE = str(datetime.now().strftime('%Y%m%d'))
 TODAY_TIME = str(datetime.now().strftime('%H%M%S'))
-CONVERTED_FILE = './converted.csv'
 RESULT_DIR = './results/'
 
 EXTENSION_MP3 = 'mp3'
@@ -49,6 +47,7 @@ COLUMN_NAME_TITLE = u'제목'
 COLUMN_NAME_CONTENT = u'내용'
 COLUMN_NAME_CORRECT_FROM = u'찾을 단어'
 COLUMN_NAME_CORRECT_TO = u'고칠 단어'
+COLUMN_NAME_CONVERTED = u'변환됨'
 
 ##
 
@@ -145,23 +144,6 @@ def escape_characters(s):
     s = string.replace(s, '\n', '')
     return s
 
-def removeNewLine(s):
-    return string.replace(s, '\n', '')
-def getCSVColumnNumber(filename, column):
-    """ 파일이름의 CSV 파일을 열어 column이 몇 번째 칼럼인지 확인한 다음 숫자를 돌려준다.
-    """
-    if os.path.isfile(filename) == False:
-        return False
-    with open(filename, 'rb') as c:
-        for line in c.readlines():
-            p = 0
-            l = line.split(',')
-            for i in range(len(l)):
-                if str(removeNewLine(l[i])) == str(column):
-                    return i
-                else:
-                    pass
-            return False
 
 def correctWords(gd, full_content):
     rows = gd.getCorrectRows()
@@ -182,30 +164,6 @@ def touch(path):
         os.utime(path, None)
 
 
-def saveConvertedContent(hashed):
-    """ 변환한 데이터의 해시를 받아 파일에 추가한다.
-    """
-    if os.path.isfile(CONVERTED_FILE) == False:
-        touch(CONVERTED_FILE)
-    with open(CONVERTED_FILE, 'ab') as f:
-        r = csv.writer(f, delimiter = ',')
-        r.writerow([str(hashed)])
-
-def searchConvertedContent(hashed):
-    """ 해시를 받아 converted.csv 파일에서 검색한 결과를 돌려준다.
-    """
-    if os.path.isfile(CONVERTED_FILE) == False:
-        return False
-    with open(CONVERTED_FILE, 'rb') as c:
-        reader = csv.reader(c)
-        for row in reader:
-            if str(row[0]) != hashed:
-                pass
-            else:
-                return True
-    return False
-
-
 def cleanupBeforeStart():
     aiff = './*.' + EXTENSION_AIFF
     r = glob.glob(aiff)
@@ -216,12 +174,6 @@ def cleanupBeforeStart():
     r = glob.glob(mp3)
     for i in r:
         os.remove(i)
-
-
-def getHash(source):
-    h = hashlib.new('sha256')
-    h.update(source)
-    return str(h.hexdigest())
 
 
 class GoogleDocs:
@@ -242,6 +194,9 @@ class GoogleDocs:
         worksheet_key = getCorrectWorksheetKey()
         return self.gd_client.GetListFeed(spreadsheet_key, worksheet_key).entry
 
+    def updateRow(self, entry, new_row_data):
+        self.gd_client.UpdateRow(entry, new_row_data)
+
 
 def run():
     count = 2
@@ -254,10 +209,9 @@ def run():
 
         source = row.custom[COLUMN_NAME_SOURCE].text
         title = escape_characters(row.custom[COLUMN_NAME_TITLE].text)
-        full_content = title + ', ' + escape_characters_content_text(row.custom[COLUMN_NAME_CONTENT].text)
+        full_content = title + ', ' + escape_characters(row.custom[COLUMN_NAME_CONTENT].text)
 
-        hashed = getHash(source)
-        if searchConvertedContent(hashed) == False:
+        if row.custom[COLUMN_NAME_CONVERTED].text == None:
             mp3_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_MP3
             aiff_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_AIFF
 
@@ -285,7 +239,15 @@ def run():
 
             if TEST_MODE == False:
                 addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
-                saveConvertedContent(hashed)
+
+                new_row_data = {}
+                new_row_data[COLUMN_NAME_SOURCE] = row.custom[COLUMN_NAME_SOURCE].text
+                new_row_data[COLUMN_NAME_TITLE] = row.custom[COLUMN_NAME_TITLE].text
+                new_row_data[COLUMN_NAME_CONTENT] = row.custom[COLUMN_NAME_CONTENT].text
+                new_row_data[COLUMN_NAME_TIMESTAMP] = row.custom[COLUMN_NAME_TIMESTAMP].text
+                new_row_data[COLUMN_NAME_CONVERTED] = 'O'
+                
+                gd.updateRow(row, new_row_data)
 
         else:
             logging.warning('Already converted: Skipped')
