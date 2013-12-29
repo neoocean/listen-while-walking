@@ -19,6 +19,8 @@ import gdata.docs.service
 import gdata.spreadsheet.service
 import re, os
 
+from google_drive_authentication import *
+
 from datetime import datetime
 
 
@@ -169,16 +171,16 @@ def getCSVColumnNumber(filename, column):
 
 
 def correctWords(full_content):
-    spreadsheet_key = ''
-    worksheet_id = ''
+    spreadsheet_key = getSpreadsheetKey()
+    worksheet_key = getCorrectWorksheetKey()
 
     gd_client = gdata.spreadsheet.service.SpreadsheetsService()
-    gd_client.email = 'wjkim@neoocean.net'
-    gd_client.password = ''
+    gd_client.email = getGoogleAccountName()
+    gd_client.password = getGoogleAccountPassword()
     gd_client.source = 'Example Spreadsheet Writing Application'
     gd_client.ProgrammaticLogin()
 
-    feed = gd_client.GetListFeed(spreadsheet_key, worksheet_id)
+    feed = gd_client.GetListFeed(spreadsheet_key, worksheet_key)
 
     for sheet in feed.entry:
         full_content = string.replace(full_content, sheet.title.text, sheet.content.text.split(':')[1].strip())
