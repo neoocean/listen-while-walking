@@ -28,6 +28,8 @@ sys.setdefaultencoding('utf-8')
 
 
 #setting
+TEST_MODE = True
+
 album = u'걸어다니며 듣기'
 artist = u'걸어다니며 듣기'
 genre = u'Voice'
@@ -280,8 +282,9 @@ for row in rows:
             logging.warning('FAILED: moveToResultDirectory(' + mp3_filename + ')')
             sys.exit()
 
-        addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
-        saveConvertedContent(hashed)
+            if runFFmpegCommand(cmd) == False:
+                logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
+                sys.exit()
 
     else:
         logging.warning('Already converted: Skipped')
