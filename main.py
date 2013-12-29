@@ -14,6 +14,11 @@ import hashlib
 import glob
 import logging
 
+import gdata.docs
+import gdata.docs.service
+import gdata.spreadsheet.service
+import re, os
+
 from datetime import datetime
 
 
@@ -164,19 +169,21 @@ def getCSVColumnNumber(filename, column):
 
 
 def correctWords(full_content):
-    with open(CORRECT_FILE, 'rb') as c:
-        reader = csv.reader(c)
-        next(reader, None) # skip Header Row.
-        for row in reader:
-            correct_from_col = getCSVColumnNumber(CORRECT_FILE, COLUMN_NAME_CORRECT_FROM)
-            correct_from = row[correct_from_col].strip()
-            correct_to_col = getCSVColumnNumber(CORRECT_FILE, COLUMN_NAME_CORRECT_TO)
-            correct_to = row[correct_to_col].strip()
+    spreadsheet_key = ''
+    worksheet_id = ''
 
-            # logging.warning('tring.replace(full_content, ' + correct_from + ', ' + correct_to + ')')
-            full_content = string.replace(full_content, correct_from, correct_to)
+    gd_client = gdata.spreadsheet.service.SpreadsheetsService()
+    gd_client.email = 'wjkim@neoocean.net'
+    gd_client.password = ''
+    gd_client.source = 'Example Spreadsheet Writing Application'
+    gd_client.ProgrammaticLogin()
 
-    return full_content
+    feed = gd_client.GetListFeed(spreadsheet_key, worksheet_id)
+
+    for sheet in feed.entry:
+        full_content = string.replace(full_content, sheet.title.text, sheet.content.text.split(':')[1].strip())
+        print 'full_content = string.replace(full_content, ' + sheet.title.text + ', ' + sheet.content.text.split(':')[1].strip() + ')'
+        return full_content
 
 
 def touch(path):
