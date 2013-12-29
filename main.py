@@ -155,15 +155,11 @@ def getCSVColumnNumber(filename, column):
             p = 0
             l = line.split(',')
             for i in range(len(l)):
-                # print str(i) + ', ' + removeNewLine(l[i]) + ', ' + column
                 if str(removeNewLine(l[i])) == str(column):
                     return i
                 else:
                     pass
             return False
-# print getCSVColumnNumber(CONTENT_FILE, '제목')
-# sys.exit()
-
 
 def correctWords(full_content):
     spreadsheet_key = getSpreadsheetKey()
