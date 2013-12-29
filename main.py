@@ -36,8 +36,6 @@ iTunesPlayList = u'걸어다니며 듣기'
 TODAY_DATE = str(datetime.now().strftime('%Y%m%d'))
 TODAY_TIME = str(datetime.now().strftime('%H%M%S'))
 CONVERTED_FILE = './converted.csv'
-CONTENT_FILE = './list.csv'
-CORRECT_FILE = './correct.csv'
 RESULT_DIR = './results/'
 
 EXTENSION_MP3 = 'mp3'
@@ -174,15 +172,20 @@ def correctWords(full_content):
     gd_client = gdata.spreadsheet.service.SpreadsheetsService()
     gd_client.email = getGoogleAccountName()
     gd_client.password = getGoogleAccountPassword()
-    gd_client.source = 'Example Spreadsheet Writing Application'
+    gd_client.source = getApplicationName()
     gd_client.ProgrammaticLogin()
 
-    feed = gd_client.GetListFeed(spreadsheet_key, worksheet_key)
+    rows = gd_client.GetListFeed(spreadsheet_key, worksheet_key)
 
-    for sheet in feed.entry:
-        full_content = string.replace(full_content, sheet.title.text, sheet.content.text.split(':')[1].strip())
-        print 'full_content = string.replace(full_content, ' + sheet.title.text + ', ' + sheet.content.text.split(':')[1].strip() + ')'
-        return full_content
+    for sheet in rows.entry:
+        if sheet.content.text == None:
+            correct_to = ''
+        else:
+            correct_to = sheet.content.text.split(':')[1].strip()
+        full_content = string.replace(full_content, sheet.title.text, correct_to)
+        # print 'full_content = string.replace(full_content, ' + sheet.title.text + ', ' + sheet.content.text.split(':')[1].strip() + ')'
+
+    return full_content
 
 
 def touch(path):
@@ -233,92 +236,58 @@ def getHash(source):
 
 
 # 제목과 내용을 csv 파일로부터 읽는다.
-with open(CONTENT_FILE, 'rb') as c:
-    reader = csv.reader(c)
-    next(reader, None) # skip Header Row.
-    count = 1
-    for row in reader:
- 
-        col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_TIMESTAMP)
-        if col >= 0:
-            pass
-        else:
-            logging.warning('FAILED: getCSVColumnNumber(' \
-                                + CONTENT_FILE + ', ' \
-                                + COLUMN_NAME_TIMESTAMP + ')')
+spreadsheet_key = getSpreadsheetKey()
+worksheet_id = getContentsWorksheetKey()
+
+gd_client = gdata.spreadsheet.service.SpreadsheetsService()
+gd_client.email = getGoogleAccountName()
+gd_client.password = getGoogleAccountPassword()
+gd_client.source = getApplicationName()
+gd_client.ProgrammaticLogin()
+
+rows = gd_client.GetListFeed(spreadsheet_key, worksheet_id).entry
+
+count = 2
+
+for row in rows:
+    print str(count) + '. ' + row.custom[COLUMN_NAME_TITLE].text
+    cleanupBeforeStart()
+
+    source = row.custom[COLUMN_NAME_SOURCE].text
+    title = escape_characters(row.custom[COLUMN_NAME_TITLE].text)
+    full_content = title + ', ' + escape_characters_content_text(row.custom[COLUMN_NAME_CONTENT].text)
+
+    hashed = getHash(source)
+    if searchConvertedContent(hashed) == False:
+        mp3_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_MP3
+        aiff_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_AIFF
+
+        full_content = correctWords(full_content)
+
+        if convertToVoice(aiff_filename, full_content) == False:
+            logging.warning('FAILED: convertToVoice(' + aiff_filename + ', ' + full_content + ')')
             sys.exit()
 
-        if row[col] != '':
-            print '\nProcessing Row: ' + str(count)
-            cleanupBeforeStart()
+        base_cmd = getFFmpegBaseCommand(title, aiff_filename)
+        meta_cmd = getFFmpegMetaCommand(title, album, artist, genre, mp3_filename)
+        cmd = base_cmd + meta_cmd + ' \'' + mp3_filename + '\''
 
-            col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_SOURCE)
-            if col == False:
-                logging.warning('FAILED: getCSVColumnNumber(' \
-                                + CONTENT_FILE + ', ' \
-                                + COLUMN_NAME_SOURCE + ')')
-                sys.exit()
-            else:
-                source = row[col]
+        if runFFmpegCommand(cmd) == False:
+            logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
+            sys.exit()
 
-            col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_TITLE)
-            if col == False:
-                logging.warning('FAILED: getCSVColumnNumber(' \
-                                + CONTENT_FILE + ', ' \
-                                + COLUMN_NAME_TITLE + ')')
-                sys.exit()
-            else:
-                title = escape_characters(row[col])
+        if removeAIFF(aiff_filename) == False:
+            logging.warning('FAILED: removeAIFF(' + aiff_filename + ')')
+            sys.exit()
+    
+        if moveToResultDirectory(mp3_filename) == False:
+            logging.warning('FAILED: moveToResultDirectory(' + mp3_filename + ')')
+            sys.exit()
 
-            hashed = getHash(source)
+        addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
+        saveConvertedContent(hashed)
 
-            col = getCSVColumnNumber(CONTENT_FILE, COLUMN_NAME_CONTENT)
-            if col == False:
-                logging.warning('FAILED: getCSVColumnNumber(' \
-                                + CONTENT_FILE + ', ' \
-                                + COLUMN_NAME_CONTENT + ')')
-                sys.exit()
-            else:
-                full_content = title + '......' + \
-                               escape_characters_content_text(row[col])
+    else:
+        logging.warning('Already converted: Skipped')
 
-            if searchConvertedContent(hashed) == False:
-                mp3_filename = TODAY_DATE + ' ' + \
-                               escape_characters(title) + \
-                               '.' + EXTENSION_MP3
-                aiff_filename = TODAY_DATE + ' ' + \
-                                escape_characters(title) + \
-                                '.' + EXTENSION_AIFF
-
-                full_content = correctWords(full_content)
-
-                if convertToVoice(aiff_filename, full_content) == False:
-                    logging.warning('FAILED: convertToVoice(' + \
-                                    aiff_filename + ', ' + full_content + ')')
-                    sys.exit()
-
-                base_cmd = getFFmpegBaseCommand(title, aiff_filename)
-                meta_cmd = getFFmpegMetaCommand(title, album, artist, 
-                                                genre, mp3_filename)
-                cmd = base_cmd + meta_cmd + ' \'' + mp3_filename + '\''
-                if runFFmpegCommand(cmd) == False:
-                    logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
-                    sys.exit()
-
-                if removeAIFF(aiff_filename) == False:
-                    logging.warning('FAILED: removeAIFF(' + aiff_filename + ')')
-                    sys.exit()
-                
-                if moveToResultDirectory(mp3_filename) == False:
-                    logging.warning('FAILED: moveToResultDirectory(' + mp3_filename + ')')
-                    sys.exit()
-
-                addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
-                saveConvertedContent(hashed)
-
-                # ~ if searchConvertedContent
-            else:
-                logging.warning('Already converted: Skipped')
-            
-            count = count + 1
-
+    count = count + 1
