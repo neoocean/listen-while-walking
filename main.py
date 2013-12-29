@@ -5,6 +5,7 @@
 import sys
 import commands
 import os
+import pwd
 import string
 import shutil
 import struct
@@ -15,8 +16,11 @@ import logging
 
 from datetime import datetime
 
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
+
 
 #setting
 album = '걸어다니며 듣기'
@@ -43,6 +47,8 @@ COLUMN_NAME_CORRECT_TO = '고칠 단어'
 
 ##
 
+def getUserName():
+    return pwd.getpwuid(os.getuid())[0]
 
 def convertToVoice(filename, full_content):
     cmd = 'say -o ./\'' + filename + '\' \'' + full_content + '\''
@@ -92,7 +98,8 @@ def removeAIFF(aiff_filename):
 
 def addVoiceToItunesLibrary(mp3_filename):
     source = './' + mp3_filename
-    distnation = '/Users/neoocean/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
+    distnation = 'Users/' + getUserName() \
+                          + '/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized'
     shutil.move(source, distnation)
     # 파일이 곧 사라지기 때문에 리턴을 체크하면 안됨. 차라리 직접 아이튠즈 라이브러리를 검색하면?
 
