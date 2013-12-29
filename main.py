@@ -52,9 +52,6 @@ COLUMN_NAME_CORRECT_TO = u'고칠 단어'
 
 ##
 
-def getUserName():
-    return pwd.getpwuid(os.getuid())[0]
-
 def convertToVoice(filename, full_content):
     cmd = 'say -o ./\'' + filename + '\' \'' + full_content + '\''
     result = commands.getstatusoutput(cmd)
@@ -101,6 +98,8 @@ def removeAIFF(aiff_filename):
         return False
     return True
 
+def getUserName():
+    return pwd.getpwuid(os.getuid())[0]
 def addVoiceToItunesLibrary(mp3_filename):
     source = './' + mp3_filename
     distnation = '/Users/' + getUserName() \
