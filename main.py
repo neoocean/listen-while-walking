@@ -13,7 +13,6 @@ import logging
 import gdata.docs
 import gdata.docs.service
 import gdata.spreadsheet.service
-import re
 import os
 
 from google_drive_authentication import *
