@@ -106,42 +106,20 @@ def addVoiceToItunesLibrary(mp3_filename):
                            + 'Automatically Add to iTunes.localized'
     shutil.move(source, distnation)
 
+
 def moveToResultDirectory(mp3_filename):
     source = './' + mp3_filename
     distnation = RESULT_DIR + mp3_filename
     shutil.move(source, distnation)
     return True # 임시; 실제로 파일이 있는지 확인한 다음에 리턴할 것.
 
-def escape_characters_content_text(s):
-    """ 본문에서 csv 파일에 문제를 일으키는 문자를 제거.
-    """
-    s = string.replace(s, '"', '')
-    s = string.replace(s, '\'', '')
-    #s = string.replace(s, ',', '')
-    return s
 
 def escape_characters(s):
-    s = string.replace(s, ':', '')
-    s = string.replace(s, '.', '')
-    s = string.replace(s, '\\', '')
-    s = string.replace(s, '!', '')
-    s = string.replace(s, '/', '')
-    s = string.replace(s, '#', '')
-    s = string.replace(s, '&', '')
-    s = string.replace(s, '*', '')
-    s = string.replace(s, '(', '')
-    s = string.replace(s, ')', '')
-    s = string.replace(s, '{', '')
-    s = string.replace(s, '}', '')
-    s = string.replace(s, '@', '')
-    s = string.replace(s, '$', '')
-    s = string.replace(s, '?', '')
-    s = string.replace(s, '^', '')
-    s = string.replace(s, '"', '')
-    s = string.replace(s, ',', '')
-    s = string.replace(s, '\'', '')
-    s = string.replace(s, '\t', '')
-    s = string.replace(s, '\n', '')
+    for char in [':', '.', '\\', '!', '/', '#', '&', '*', '(', ')', '{', '}', 
+                 '[', ']', '@', '$', '?', '^', '"', ',', '\'', '\t', '\n']:
+        if char in s:
+            s = s.replace(char, '')
+
     return s
 
 
