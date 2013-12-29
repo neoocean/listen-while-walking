@@ -1,7 +1,5 @@
 # coding=utf-8
 
-# https://docs.google.com/a/neoocean.net/spreadsheet/ccc?key=0AuH586Q4RPiudGZkbFhXYVBlZzlEUHdGRUtwS09OSXc&usp=drive_web
-
 import sys
 import commands
 import os
