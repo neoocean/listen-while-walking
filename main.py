@@ -48,6 +48,9 @@ COLUMN_NAME_CORRECT_FROM = u'찾을 단어'
 COLUMN_NAME_CORRECT_TO = u'고칠 단어'
 COLUMN_NAME_CONVERTED = u'변환됨'
 
+EFFECT_FILE = 'page-flip-10.' + EXTENSION_MP3
+TEMP_FILE = 'output.' + EXTENSION_MP3
+
 ##
 
 def convertToVoice(filename, full_content):
@@ -59,27 +62,40 @@ def convertToVoice(filename, full_content):
         return False
 
 
-def getFFmpegCommand(aiff_filename, mp3_filename, title, album,artist, genre):
+def getFFmpegEncodingCommand(aiff_filename, mp3_filename):
     cmd = ''
     cmd = './ffmpeg -y -i "' + aiff_filename \
-          + '" -f mp3 -acodec libmp3lame -ab 48000 -ar 22050 "' + mp3_filename + '"' \
+          + '" -f mp3 -acodec libmp3lame -ab 320000 -ar 44100 "' + TEMP_FILE + '"'
+    return cmd
+
+def getFFmpegConcatCommand(mp3_filename, title, album, artist, genre):
+    cmd = ''
+    cmd = './ffmpeg -i "concat:' + TEMP_FILE + '|' + EFFECT_FILE \
+          + '" -f mp3 -acodec libmp3lame -ab 48000 -ar 22050 ' \
           + ' -metadata title="' + escape_characters(title) + '"' \
           + ' -metadata album="' + album + '"' \
           + ' -metadata artist="' + artist + '"' \
           + ' -metadata TIT1="' + album + '"' \
           + ' -metadata genre="' + genre + '"' \
-          + ' -metadata TIT3="' + mp3_filename + '"'
+          + ' -metadata TIT3="' + mp3_filename + '"' \
+          + ' "./' + mp3_filename + '"'
     return cmd
 
-
 def runFFmpegCommand(cmd):
-    #ffmpeg 커맨드를 실행한다. 부디 같은 디렉토리 안에 있기를 바래요.
+    # ffmpeg를 실행한다. 실행하기 전에 파일 유무를 확인하는 것이 좋겠다.
+    print cmd
     result = commands.getstatusoutput(cmd)
     if result[0] == 0:
         return True
     else:
-        return False
+        return result[1]
 
+def cleanupBeforeStart():
+    try:
+        os.remove(TEMP_FILE)
+    except OSError:
+        return False
+    return True
 
 def removeAIFF(aiff_filename):
     try:
@@ -107,7 +123,7 @@ def moveToResultDirectory(mp3_filename):
 
 def escape_characters(s):
     for char in [':', '.', '\\', '!', '/', '#', '&', '*', '(', ')', '{', '}', 
-                 '[', ']', '@', '$', '?', '^', '"', ',', '\'', '\t', '\n']:
+                 '[', ']', '@', '$', '?', '^', '"', ',', '\'', '\t', '\n', '`']:
         if char in s:
             s = s.replace(char, '')
 
@@ -131,18 +147,6 @@ def correctWords(gd, full_content):
 def touch(path):
     with open(path, 'a'):
         os.utime(path, None)
-
-
-def cleanupBeforeStart():
-    aiff = './*.' + EXTENSION_AIFF
-    r = glob.glob(aiff)
-    for i in r:
-        os.remove(i)
-
-    mp3 = './*.' + EXTENSION_MP3
-    r = glob.glob(mp3)
-    for i in r:
-        os.remove(i)
 
 
 class GoogleDocs:
@@ -174,13 +178,14 @@ def run():
 
     for row in gd.getContentsRows(): 
         print str(count) + '. ' + row.custom[COLUMN_NAME_TITLE].text
-        cleanupBeforeStart()
 
         source = row.custom[COLUMN_NAME_SOURCE].text
         title = escape_characters(row.custom[COLUMN_NAME_TITLE].text)
         full_content = title + ', ' + escape_characters(row.custom[COLUMN_NAME_CONTENT].text)
 
         if row.custom[COLUMN_NAME_CONVERTED].text == None:
+            cleanupBeforeStart()
+
             mp3_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_MP3
             aiff_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_AIFF
 
@@ -190,16 +195,23 @@ def run():
                 logging.warning('FAILED: convertToVoice(' + aiff_filename + ', ' + full_content + ')')
                 sys.exit()
 
-            cmd = getFFmpegCommand(aiff_filename, mp3_filename, title, album,artist, genre)
+            # 인코딩
+            cmd = getFFmpegEncodingCommand(aiff_filename, mp3_filename)
+            result = runFFmpegCommand(cmd)
+            if result == False:
+                logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
+                logging.warning('FAILED: runFFmpegCommand(' + str(result) + ')')
+                sys.exit()
 
+            # 끝에 이펙트 연결
+            cmd = getFFmpegConcatCommand(mp3_filename, title, album,artist, genre)
             if runFFmpegCommand(cmd) == False:
                 logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
-                sys.exit()        
+                sys.exit()
 
             if removeAIFF(aiff_filename) == False:
                 logging.warning('FAILED: removeAIFF(' + aiff_filename + ')')
-                sys.exit()
-        
+                sys.exit()        
             if moveToResultDirectory(mp3_filename) == False:
                 logging.warning('FAILED: moveToResultDirectory(' + mp3_filename + ')')
                 sys.exit()
