@@ -58,25 +58,17 @@ def convertToVoice(filename, full_content):
     else:
         return False
 
-def getFFmpegBaseCommand(title, aiff_filename):
-    # mp3 형식으로 컨버팅하는 ffmpeg 커맨드를 준비한다.
-    mp3_filename = TODAY_DATE + ' ' + title + '.' + EXTENSION_MP3
-    cmd = './ffmpeg -y -i \'' + aiff_filename + \
-        '\' -f mp3 -acodec libmp3lame -ab 48000 -ar 22050'
-    return cmd
 
-
-def getFFmpegMetaCommand(title, album, artist, genre, mp3_filename):
-    # 메타데이터를 입력하는 ffmpeg 커맨드를 준비한다.
-    # http://jonhall.info/how_to/create_id3_tags_using_ffmpeg
+def getFFmpegCommand(aiff_filename, mp3_filename, title, album,artist, genre):
     cmd = ''
-    cmd = cmd + ' -metadata artist=\'\''
-    cmd = cmd + ' -metadata title=\'' + escape_characters(title) + '\''
-    cmd = cmd + ' -metadata album=\'' + album + '\''
-    cmd = cmd + ' -metadata artist=\'' + artist + '\''
-    cmd = cmd + ' -metadata TIT1=\'' + album + '\'' # itunes groupping
-    cmd = cmd + ' -metadata genre=\'' + genre + '\''
-    cmd = cmd + ' -metadata TIT3=\'' + mp3_filename + '\''
+    cmd = './ffmpeg -y -i "' + aiff_filename \
+          + '" -f mp3 -acodec libmp3lame -ab 48000 -ar 22050 "' + mp3_filename + '"' \
+          + ' -metadata title="' + escape_characters(title) + '"' \
+          + ' -metadata album="' + album + '"' \
+          + ' -metadata artist="' + artist + '"' \
+          + ' -metadata TIT1="' + album + '"' \
+          + ' -metadata genre="' + genre + '"' \
+          + ' -metadata TIT3="' + mp3_filename + '"'
     return cmd
 
 
@@ -198,13 +190,11 @@ def run():
                 logging.warning('FAILED: convertToVoice(' + aiff_filename + ', ' + full_content + ')')
                 sys.exit()
 
-            base_cmd = getFFmpegBaseCommand(title, aiff_filename)
-            meta_cmd = getFFmpegMetaCommand(title, album, artist, genre, mp3_filename)
-            cmd = base_cmd + meta_cmd + ' \'' + mp3_filename + '\''
+            cmd = getFFmpegCommand(aiff_filename, mp3_filename, title, album,artist, genre)
 
             if runFFmpegCommand(cmd) == False:
                 logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
-                sys.exit()
+                sys.exit()        
 
             if removeAIFF(aiff_filename) == False:
                 logging.warning('FAILED: removeAIFF(' + aiff_filename + ')')
