@@ -15,6 +15,7 @@ listen-while-walking
  * 구글 드라이브 계정
 
 ## 설치 방법
+좀... 많이 귀찮고 복잡합니다.
 
 ### 구글 드라이브에 양식과 스프레드시트 만들기.
 
@@ -32,10 +33,10 @@ listen-while-walking
 
 #### 구글 드라이브 양식 생성
 구글 드라이브에 새 양식을 생성합니다. (아래 공개 양식을 참고하세요.)
- * https://drive.google.com/folderview?id=0B-H586Q4RPiucm8tZTlMNm14cWs&usp=sharing
+ * https://docs.google.com/a/neoocean.net/forms/d/1PhjjoW1Fi_MVm2gM9nKe3mZT6dlHDTXEBd4TW3qLJaw/viewform
 
 #### 구글 스프레드시트 생성
-위에서 만든 스프레드시트를 열고 칼럼 이름이 다음과 같은지 확인합니다. 맨 뒤에 '변환됨'이 없다면 첫 번째 행 마지막에 입력합니다.
+위에서 만든 스프레드시트를 열고 칼럼 이름이 다음과 같은지 확인합니다. 맨 뒤에 '변환됨'이 없다면 첫 번째 행 마지막에 입력합니다. 스프레드시트는 https://docs.google.com/a/neoocean.net/spreadsheet/ccc?key=0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc&usp=drive_web#gid=0 을 참고합니다.
 
     '타임스탬프', '주소', '제목', '내용', '변환됨'
 
