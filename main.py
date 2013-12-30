@@ -3,6 +3,7 @@
 import sys
 import commands
 import os
+import os.path
 import pwd
 import string
 import shutil
@@ -53,6 +54,9 @@ TEMP_FILE = 'output.' + EXTENSION_MP3
 
 ##
 
+def fileExists(file):
+    return os.path.exists(file)
+
 def convertToVoice(filename, full_content):
     cmd = 'say -o ./\'' + filename + '\' \'' + full_content + '\''
     result = commands.getstatusoutput(cmd)
@@ -83,7 +87,9 @@ def getFFmpegConcatCommand(mp3_filename, title, album, artist, genre):
 
 def runFFmpegCommand(cmd):
     # ffmpeg를 실행한다. 실행하기 전에 파일 유무를 확인하는 것이 좋겠다.
-    print cmd
+
+    if fileExists('./ffmpeg') == False:
+        print 'ffmpeg를 찾을 수 없습니다. http://ffmpegmac.net/ 에서 받을 수 있습니다.'
     result = commands.getstatusoutput(cmd)
     if result[0] == 0:
         return True
@@ -121,7 +127,7 @@ def moveToResultDirectory(mp3_filename):
     try:
         shutil.move(source, distnation)
     except IOError: 
-        print 'moveToResultDirectory: IOError'
+        print 'mp3 파일을 임시 폴더로 옮기는데 실패했습니다.'
 
     return True
 
@@ -160,6 +166,7 @@ class GoogleDocs:
         self.gd_client.password = getGoogleAccountPassword()
         self.gd_client.source = getApplicationName()
         try: 
+            print '구글 드라이브에 연결하고 있습니다.'
             self.gd_client.ProgrammaticLogin()
         except gdata.service.RequestError, inst:
             response = inst[0]  
@@ -171,9 +178,26 @@ class GoogleDocs:
                   + ' body: ' + response['body']
 
     def getContentsRows(self):
+<<<<<<< HEAD
+        spreadsheet_key = configSpreadsheetKey
+        worksheet_id = configContentsWorksheetKey
+
+        try:
+            entry = self.gd_client.GetListFeed(spreadsheet_key, worksheet_id).entry
+        except gdata.service.RequestError, inst:
+            response = inst[0]  
+            status = response['status']  
+            reason = response['reason']  
+            body = response['body']
+            print 'status: ' + response['status'] \
+                  + ' reason: ' + response['reason'] \
+                  + ' body: ' + response['body']
+        return entry
+=======
         spreadsheet_key = getSpreadsheetKey()
         worksheet_id = getContentsWorksheetKey()
         return self.gd_client.GetListFeed(spreadsheet_key, worksheet_id).entry
+>>>>>>> parent of 4c38263... 설정 파일을 분리.
 
     def getCorrectRows(self):
         spreadsheet_key = getSpreadsheetKey()
@@ -205,13 +229,11 @@ class GoogleDocs:
 
 
 def run():
-    count = 2
+    count = 1
 
     gd = GoogleDocs()
 
     for row in gd.getContentsRows(): 
-        print str(count) + '. ' + row.custom[COLUMN_NAME_TITLE].text
-
         source = row.custom[COLUMN_NAME_SOURCE].text
         title = escape_characters(row.custom[COLUMN_NAME_TITLE].text)
         full_content = title + ', ' + escape_characters(row.custom[COLUMN_NAME_CONTENT].text)
@@ -225,28 +247,27 @@ def run():
             full_content = correctWords(gd, full_content)
 
             if convertToVoice(aiff_filename, full_content) == False:
-                logging.warning('FAILED: convertToVoice(' + aiff_filename + ', ' + full_content + ')')
+                print '텍스트를 음성으로 변환하는데 실패했습니다.'
                 sys.exit()
 
             # 인코딩
             cmd = getFFmpegEncodingCommand(aiff_filename, mp3_filename)
             result = runFFmpegCommand(cmd)
             if result == False:
-                logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
-                logging.warning('FAILED: runFFmpegCommand(' + str(result) + ')')
+                print '음성 파일을 인코딩하는데 실패했습니다.'
                 sys.exit()
 
             # 끝에 이펙트 연결
             cmd = getFFmpegConcatCommand(mp3_filename, title, album,artist, genre)
             if runFFmpegCommand(cmd) == False:
-                logging.warning('FAILED: runFFmpegCommand(' + cmd + ')')
+                print '음성 파일에 효과음을 추가하는데 실패했습니다.'
                 sys.exit()
 
             if removeAIFF(aiff_filename) == False:
-                logging.warning('FAILED: removeAIFF(' + aiff_filename + ')')
+                print '음성 파일을 정리하지 못했습니다.'
                 sys.exit()        
             if moveToResultDirectory(mp3_filename) == False:
-                logging.warning('FAILED: moveToResultDirectory(' + mp3_filename + ')')
+                print '인코딩 된 파일을 이동하는데 실패했습니다.'
                 sys.exit()
 
             if TEST_MODE == False:
@@ -261,8 +282,9 @@ def run():
                 
                 gd.updateRow(row, new_row_data)
 
+            print str(count) + '. ' + row.custom[COLUMN_NAME_TITLE].text + ' (변환 완료)'
         else:
-            logging.warning('Already converted: Skipped')
+            print str(count) + '. ' + row.custom[COLUMN_NAME_TITLE].text + ' (건너뜀)'
 
         count = count + 1
 
