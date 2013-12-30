@@ -1,17 +1,21 @@
 # coding=utf-8
 
+# mp3 파일의 엘범, 아티스트, 장르 설정: 
 album = u'걸어다니며 듣기'
 artist = u'걸어다니며 듣기'
 genre = u'Voice'
-iTunesPlayList = u'걸어다니며 듣기'
 
+# 구글 아이디, 패스워드, 스프레드시트 주소 뒷부분: 
 configGoogleAccountName = ''
 configGoogleAccountPassword = ''
 configSpreadsheetKey = ''
+
+# 'help.py'를 실행해서 나온 결과를 추가: 
 configCorrectWorksheetKey = ''
 configContentsWorksheetKey = ''
 
 
+# 여기부터는 안 건드려도 됩니다: 
 configApplicationName = 'listen-while-walking'
 
 from datetime import datetime
