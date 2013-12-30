@@ -169,8 +169,8 @@ class GoogleDocs:
         return entry
 
     def getCorrectRows(self):
-        spreadsheet_key = getSpreadsheetKey
-        worksheet_key = getCorrectWorksheetKey
+        spreadsheet_key = configSpreadsheetKey
+        worksheet_key = configCorrectWorksheetKey
 
         try:
             entry = self.gd_client.GetListFeed(spreadsheet_key, worksheet_key).entry 
