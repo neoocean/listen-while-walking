@@ -12,6 +12,7 @@ listen-while-walking
 ## 사용하려면 이런 것들이 필요합니다.
  * https://developers.google.com/gdata/articles/python_client_lib
  * http://ffmpegmac.net/
+ * 구글 드라이브 계정
 
 ## 설치 방법
 
@@ -35,21 +36,22 @@ listen-while-walking
 
 #### 구글 스프레드시트 생성
 위에서 만든 스프레드시트를 열고 칼럼 이름이 다음과 같은지 확인합니다. 맨 뒤에 '변환됨'이 없다면 첫 번째 행 마지막에 입력합니다.
- * '타임스탬프', '주소', '제목', '내용', '변환됨'
+    '타임스탬프', '주소', '제목', '내용', '변환됨'
 
-#### 구글 드라이브에 만든 양식에 주소, 제목, 내용을 각각 입력해 봅니다.
+#### 양식 테스트
+구글 드라이브에 만든 양식에 주소, 제목, 내용을 각각 입력한 다음 스프레드시트를 열고 양식을 이용해 입력한 내용이 반영되는지 확인합니다.
 
-#### 스프레드시트를 열고 양식을 이용해 입력한 내용이 반영되는지 확인합니다.
-
-#### 스프레드시트에 워크시트를 추가하고 칼럼 이름을 다음과 같이 입력합니다. (아래 주소를 참고하세요.)
- * '찾을 단어', '고칠 단어'
- * https://docs.google.com/a/neoocean.net/spreadsheet/ccc?key=0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc&usp=drive_web#gid=1
+#### 발음 교정 시트 추가
+스프레드시트에 워크시트를 추가하고 칼럼 이름을 다음과 같이 입력합니다. https://docs.google.com/a/neoocean.net/spreadsheet/ccc?key=0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc&usp=drive_web#gid=1 을 참고하세요.
+    '찾을 단어', '고칠 단어'
 
 ### 'config.py' 파일을 설정합니다.
 
-#### 'configGoogleAccountName'에 구글 아이디를 입력합니다.
+#### 구글 아이디 입력
+'configGoogleAccountName'에 구글 아이디를 입력합니다.
 
-#### 'configGoogleAccountPassword'에 구글 패스워드를 입력합니다. 애플리케이션 패스워드를 사용하면 패스워드를 평문으로 보관하는 부담을 줄일 수 있습니다.
+#### 구글 패스워드 입력
+'configGoogleAccountPassword'에 구글 패스워드를 입력합니다. 애플리케이션 패스워드를 사용하면 패스워드를 평문으로 보관하는 부담을 줄일 수 있습니다.
 
 #### 'configSpreadsheetKey'에 위에서 만든 '스프레드시트' 아이디를 입력하고 저장합니다.
 스프레드시트 아이디는 주소의 'key' 부분입니다. 가령 이 예에서 스프레드시트의 주소는 'https://docs.google.com/a/neoocean.net/spreadsheet/ccc?key=0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc&usp=drive_web#gid=0' 이므로 키는 '0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc'가 됩니다. 다음과 같이 설정합니다.
