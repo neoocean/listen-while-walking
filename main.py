@@ -117,8 +117,13 @@ def addVoiceToItunesLibrary(mp3_filename):
 def moveToResultDirectory(mp3_filename):
     source = './' + mp3_filename
     distnation = RESULT_DIR + mp3_filename
-    shutil.move(source, distnation)
-    return True # 임시; 실제로 파일이 있는지 확인한 다음에 리턴할 것.
+
+    try:
+        shutil.move(source, distnation)
+    except IOError: 
+        print 'moveToResultDirectory: IOError'
+
+    return True
 
 
 def escape_characters(s):
@@ -126,7 +131,6 @@ def escape_characters(s):
                  '[', ']', '@', '$', '?', '^', '"', ',', '\'', '\t', '\n', '`']:
         if char in s:
             s = s.replace(char, '')
-
     return s
 
 
@@ -155,7 +159,16 @@ class GoogleDocs:
         self.gd_client.email = getGoogleAccountName()
         self.gd_client.password = getGoogleAccountPassword()
         self.gd_client.source = getApplicationName()
-        self.gd_client.ProgrammaticLogin()
+        try: 
+            self.gd_client.ProgrammaticLogin()
+        except gdata.service.RequestError, inst:
+            response = inst[0]  
+            status = response['status']  
+            reason = response['reason']  
+            body = response['body']
+            print 'status: ' + response['status'] \
+                  + ' reason: ' + response['reason'] \
+                  + ' body: ' + response['body']
 
     def getContentsRows(self):
         spreadsheet_key = getSpreadsheetKey()
@@ -165,10 +178,30 @@ class GoogleDocs:
     def getCorrectRows(self):
         spreadsheet_key = getSpreadsheetKey()
         worksheet_key = getCorrectWorksheetKey()
-        return self.gd_client.GetListFeed(spreadsheet_key, worksheet_key).entry
+
+        try:
+            entry = self.gd_client.GetListFeed(spreadsheet_key, worksheet_key).entry 
+        except gdata.service.RequestError, inst:
+            response = inst[0]  
+            status = response['status']  
+            reason = response['reason']  
+            body = response['body']
+            print 'status: ' + response['status'] \
+                  + ' reason: ' + response['reason'] \
+                  + ' body: ' + response['body']
+        return entry
 
     def updateRow(self, entry, new_row_data):
-        self.gd_client.UpdateRow(entry, new_row_data)
+        try:
+            self.gd_client.UpdateRow(entry, new_row_data)
+        except gdata.service.RequestError, inst:
+            response = inst[0]  
+            status = response['status']  
+            reason = response['reason']  
+            body = response['body']
+            print 'status: ' + response['status'] \
+                  + ' reason: ' + response['reason'] \
+                  + ' body: ' + response['body']
 
 
 def run():
