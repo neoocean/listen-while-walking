@@ -16,41 +16,16 @@ import gdata.docs.service
 import gdata.spreadsheet.service
 import os
 
+from config import *
 from google_drive_authentication import *
-
-from datetime import datetime
 
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-
 #setting
-TEST_MODE = False
-
-album = u'걸어다니며 듣기'
-artist = u'걸어다니며 듣기'
-genre = u'Voice'
-iTunesPlayList = u'걸어다니며 듣기'
-
-TODAY_DATE = str(datetime.now().strftime('%Y%m%d'))
-TODAY_TIME = str(datetime.now().strftime('%H%M%S'))
-RESULT_DIR = './results/'
-
-EXTENSION_MP3 = 'mp3'
-EXTENSION_AIFF = 'aiff'
-
-COLUMN_NAME_TIMESTAMP = u'타임스탬프'
-COLUMN_NAME_SOURCE = u'주소'
-COLUMN_NAME_TITLE = u'제목'
-COLUMN_NAME_CONTENT = u'내용'
-COLUMN_NAME_CORRECT_FROM = u'찾을 단어'
-COLUMN_NAME_CORRECT_TO = u'고칠 단어'
-COLUMN_NAME_CONVERTED = u'변환됨'
-
-EFFECT_FILE = 'page-flip-10.' + EXTENSION_MP3
-TEMP_FILE = 'output.' + EXTENSION_MP3
+TEST_MODE = True
 
 ##
 
@@ -162,9 +137,9 @@ def touch(path):
 class GoogleDocs:
     def __init__(self):
         self.gd_client = gdata.spreadsheet.service.SpreadsheetsService()
-        self.gd_client.email = getGoogleAccountName()
-        self.gd_client.password = getGoogleAccountPassword()
-        self.gd_client.source = getApplicationName()
+        self.gd_client.email = configGoogleAccountName
+        self.gd_client.password = configGoogleAccountPassword
+        self.gd_client.source = configApplicationName
         try: 
             print '구글 드라이브에 연결하고 있습니다.'
             self.gd_client.ProgrammaticLogin()
@@ -178,7 +153,6 @@ class GoogleDocs:
                   + ' body: ' + response['body']
 
     def getContentsRows(self):
-<<<<<<< HEAD
         spreadsheet_key = configSpreadsheetKey
         worksheet_id = configContentsWorksheetKey
 
@@ -193,15 +167,10 @@ class GoogleDocs:
                   + ' reason: ' + response['reason'] \
                   + ' body: ' + response['body']
         return entry
-=======
-        spreadsheet_key = getSpreadsheetKey()
-        worksheet_id = getContentsWorksheetKey()
-        return self.gd_client.GetListFeed(spreadsheet_key, worksheet_id).entry
->>>>>>> parent of 4c38263... 설정 파일을 분리.
 
     def getCorrectRows(self):
-        spreadsheet_key = getSpreadsheetKey()
-        worksheet_key = getCorrectWorksheetKey()
+        spreadsheet_key = getSpreadsheetKey
+        worksheet_key = getCorrectWorksheetKey
 
         try:
             entry = self.gd_client.GetListFeed(spreadsheet_key, worksheet_key).entry 
