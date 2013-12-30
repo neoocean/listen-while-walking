@@ -53,25 +53,31 @@ listen-while-walking
 #### 구글 패스워드 입력
 'configGoogleAccountPassword'에 구글 패스워드를 입력합니다. 애플리케이션 패스워드를 사용하면 패스워드를 평문으로 보관하는 부담을 줄일 수 있습니다.
 
-#### 'configSpreadsheetKey'에 위에서 만든 '스프레드시트' 아이디를 입력하고 저장합니다.
+#### 스프레드시트 아이디 입력
+'configSpreadsheetKey'에 위에서 만든 '스프레드시트' 아이디를 입력하고 저장합니다.
 스프레드시트 아이디는 주소의 'key' 부분입니다. 가령 이 예에서 스프레드시트의 주소는 'https://docs.google.com/a/neoocean.net/spreadsheet/ccc?key=0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc&usp=drive_web#gid=0' 이므로 키는 '0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc'가 됩니다. 다음과 같이 설정합니다.
 
      configSpreadsheetKey = '0AuH586Q4RPiudGYzSnRSZzAwUnhDNnBkTmhSMWRfNWc'
 
-#### 'help.py'를 실행해 결과를 어딘가에 복사해 둡니다. (결과는 아래와 같이 나타납니다.)
+#### 워크시트 아이디 확인
+'help.py'를 실행해 결과를 어딘가에 복사해 둡니다. (결과는 아래와 같이 나타납니다.)
+
     구글 드라이브에 연결하고 있습니다.
     아이디     워크시트 이름
     od6         응답 양식
     od7         발음 교정
     [Finished in 2.4s]
 
-#### 위 결과에서 'od6'이나 'od7' 부분을 config.py의 'configCorrectWorksheetKey'와 'configContentsWorksheetKey'에 입력합니다. 다음과 유사한 형태가 됩니다.
+#### 워크시트 아이디 입력
+위 결과에서 'od6'이나 'od7' 부분을 config.py의 'configCorrectWorksheetKey'와 'configContentsWorksheetKey'에 입력합니다. 다음과 유사한 형태가 됩니다.
+
     # 'help.py'를 실행해서 나온 결과를 추가: 
     configCorrectWorksheetKey = 'od7'
     configContentsWorksheetKey = 'od6'
 
 ### 'main.py'를 실행합니다.
 다음과 비슷하게 나타나면 정상 동작하는 것입니다.
+
     구글 드라이브에 연결하고 있습니다.
     1. [칼럼] 자녀와 게임, 이성을 내팽개치지 말아주십시오 (건너뜀)
     2. Etsy의 장애(오류, 실수 등 포함된)와 관련된 좋은 문화
