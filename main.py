@@ -17,7 +17,6 @@ import gdata.spreadsheet.service
 import os
 
 from config import *
-from google_drive_authentication import *
 
 
 reload(sys)
@@ -25,7 +24,7 @@ sys.setdefaultencoding('utf-8')
 
 
 #setting
-TEST_MODE = True
+TEST_MODE = False
 
 ##
 
