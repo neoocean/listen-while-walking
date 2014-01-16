@@ -64,6 +64,11 @@ def runFFmpegCommand(cmd):
 
     if fileExists('./ffmpeg') == False:
         print 'ffmpeg를 찾을 수 없습니다. http://ffmpegmac.net/ 에서 받을 수 있습니다.'
+        sys.exit(1)
+    if fileExists('./' + EFFECT_FILE) == False:
+        print EFFECT_FILE + ' 파일을 찾지 못했습니다.'
+        sys.exit(1)
+
     result = commands.getstatusoutput(cmd)
     if result[0] == 0:
         return True
@@ -271,4 +276,5 @@ def run():
 
         count = count + 1
 
-run()
+if __name__ == '__main__':
+    run()
