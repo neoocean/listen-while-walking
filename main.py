@@ -91,7 +91,17 @@ def addVoiceToItunesLibrary(mp3_filename):
     distnation = '/Users/' + getUserName() \
                            + '/Music/iTunes/iTunes Media/' \
                            + 'Automatically Add to iTunes.localized'
-    shutil.move(source, distnation)
+    if fileExists(source) == False:
+        print 'mp3 파일을 찾지 못했습니다.'
+        sys.exit(1)
+    if fileExists(distnation) == True:
+        os.unlink(distnation)
+
+    try: 
+        shutil.move(source, distnation)
+    except: 
+        print 'mp3 파일을 아이튠즈 라이브러리에 추가하는데 실패했습니다.'
+        sys.exit(1)
 
 
 def moveToResultDirectory(mp3_filename):
@@ -101,7 +111,7 @@ def moveToResultDirectory(mp3_filename):
     try:
         shutil.move(source, distnation)
     except IOError: 
-        print 'mp3 파일을 임시 폴더로 옮기는데 실패했습니다.'
+        return False
 
     return True
 
