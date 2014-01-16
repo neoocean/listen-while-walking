@@ -86,16 +86,21 @@ def removeAIFF(aiff_filename):
 
 def getUserName():
     return pwd.getpwuid(os.getuid())[0]
-def addVoiceToItunesLibrary(mp3_filename):
-    source = './' + mp3_filename
+def addVoiceToItunesLibrary(mp3withPath, mp3withoutPath):
+    source = mp3withPath
     distnation = '/Users/' + getUserName() \
                            + '/Music/iTunes/iTunes Media/' \
                            + 'Automatically Add to iTunes.localized'
     if fileExists(source) == False:
         print 'mp3 파일을 찾지 못했습니다.'
         sys.exit(1)
-    if fileExists(distnation) == True:
-        os.unlink(distnation)
+    if fileExists(distnation + '/' + mp3withoutPath) == True:
+        try: 
+            os.unlink(distnation)
+        except: 
+            print 'source: ' + source
+            print 'distnation: ' + distnation
+            sys.exit(1)
 
     try: 
         shutil.move(source, distnation)
@@ -249,7 +254,7 @@ def run():
                 sys.exit()
 
             if TEST_MODE == False:
-                addVoiceToItunesLibrary(RESULT_DIR + mp3_filename)
+                addVoiceToItunesLibrary(RESULT_DIR + mp3_filename, mp3_filename)
 
                 new_row_data = {}
                 new_row_data[COLUMN_NAME_SOURCE] = row.custom[COLUMN_NAME_SOURCE].text
