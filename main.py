@@ -127,7 +127,7 @@ def moveToResultDirectory(mp3_filename):
 
 
 def escape_characters(s):
-    for char in [':', '.', '\\', '!', '/', '#', '&', '*', '(', ')', '{', '}', 
+    for char in [':', '\\', '!', '#', '&', '(', ')', '{', '}', 
                  '[', ']', '@', '$', '?', '^', '"', ',', '\'', '\t', '\n', '`']:
         if char in s:
             s = s.replace(char, '')
