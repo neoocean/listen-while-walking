@@ -222,15 +222,15 @@ def run():
     gd = GoogleDocs()
 
     for row in gd.getContentsRows(): 
-        source = row.custom[COLUMN_NAME_SOURCE].text
+        source = escape_characters(row.custom[COLUMN_NAME_SOURCE].text)
         title = escape_characters(row.custom[COLUMN_NAME_TITLE].text)
         full_content = title + ', ' + escape_characters(row.custom[COLUMN_NAME_CONTENT].text)
 
         if row.custom[COLUMN_NAME_CONVERTED].text == None:
             cleanupBeforeStart()
 
-            mp3_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_MP3
-            aiff_filename = TODAY_DATE + ' ' + escape_characters(title) + '.' + EXTENSION_AIFF
+            mp3_filename = TODAY_DATE + ' ' + correctWords(gd, escape_characters(title)) + '.' + EXTENSION_MP3
+            aiff_filename = TODAY_DATE + ' ' + correctWords(gd, escape_characters(title)) + '.' + EXTENSION_AIFF
 
             full_content = correctWords(gd, full_content)
 
